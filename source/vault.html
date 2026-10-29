@@ -60,19 +60,22 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 
 /* intro */
 .intro .in{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-bottom:120px}
-.intro .in > .lines{margin-top:auto}.intro .in > .hold{margin-bottom:auto}
+.holdcue{order:2;margin-top:18px;font:600 11px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#E6EDE7;background:rgba(3,5,4,.86);border:1px solid var(--line-2);padding:9px 14px;border-radius:2px;animation:breathe 2.6s ease-in-out infinite;box-shadow:0 0 0 rgba(0,0,0,0)}
+.intro .in > button.hold{order:1}.intro .in > .lines{order:0}.intro .in > .foot,.intro .in > .eyebrow{order:3}
+@media (hover:none){.holdcue{font-size:0}.holdcue::after{content:"Press and hold to open";font-size:11px}}
+.intro .in > .lines{margin-top:auto}.intro .in > .holdcue{margin-bottom:auto}
 .intro .eyebrow{justify-content:center;position:absolute;top:calc(74px + env(safe-area-inset-top,0px));left:20px;right:20px}
 .lines{min-height:5.6em;display:grid;place-items:center;margin-bottom:28px}
 .lines p.show{transition-delay:.7s}
 .lines p{grid-area:1/1;font-family:var(--f-display);font-weight:300;font-size:clamp(24px,3.2vw,40px);line-height:1.2;max-width:22em;opacity:0;transform:translateY(10px);transition:opacity 1s,transform 1s;text-shadow:0 2px 30px #000}
 .lines p.show{opacity:1;transform:none}
 .lines p em{color:var(--neon);font-style:italic}
-.hold{position:relative;width:132px;height:132px;border-radius:50%;border:none;background:none;cursor:pointer;padding:0;touch-action:none;-webkit-user-select:none;user-select:none}
-.hold svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.hold .trk{fill:none;stroke:rgba(183,240,94,.0)}
-.hold .bar2{fill:none;stroke:var(--neon);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--green))}
-.hold .core{all:unset;position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--neon);box-shadow:0 0 14px var(--green),0 0 34px rgba(134,188,37,.6);animation:breathe 2.6s ease-in-out infinite}
-.hold:hover .core,.hold:focus-visible .core{transform:scale(1.25)}
+button.hold{position:relative;width:132px;height:132px;border-radius:50%;border:none;background:none;cursor:pointer;padding:0;touch-action:none;-webkit-user-select:none;user-select:none}
+button.hold svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+button.hold .trk{fill:none;stroke:rgba(183,240,94,.0)}
+button.hold .bar2{fill:none;stroke:var(--neon);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--green))}
+button.hold .core{all:unset;position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--neon);box-shadow:0 0 14px var(--green),0 0 34px rgba(134,188,37,.6);animation:breathe 2.6s ease-in-out infinite}
+button.hold:hover .core,button.hold:focus-visible .core{transform:scale(1.25)}
 @keyframes breathe{0%,100%{box-shadow:0 0 10px var(--green),0 0 26px rgba(134,188,37,.45)}50%{box-shadow:0 0 18px var(--green),0 0 48px rgba(134,188,37,.75)}}
 .holdlab{margin-top:22px;font:600 11px/1.4 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--neon)}
 .holdlab{position:relative;z-index:2;text-shadow:0 0 14px #000,0 0 4px #000}
@@ -91,7 +94,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .door-grid{display:grid;grid-template-columns:minmax(230px,300px) auto minmax(250px,330px);gap:20px;justify-content:center;align-items:center;max-width:1400px;margin:18px auto 0}
 .dialspace{position:relative;width:min(780px,54vw,calc((100vh - 250px) * 1.5));aspect-ratio:3/2}
 .dialspace svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.dialspace{cursor:grab;touch-action:none;margin:46px 0}
+.dialspace{cursor:grab;touch-action:none;margin:46px 0 72px}
 .lk.N,.lk.S{white-space:nowrap}.lk.N .v,.lk.S .v{font-size:clamp(20px,2vw,26px)}.dialspace.grabbing{cursor:grabbing}
 .arc{fill:none;stroke-width:3.2;stroke-linecap:round;transition:stroke .5s,filter .5s}
 .arc.shut{stroke:#B4523F;filter:drop-shadow(0 0 4px rgba(238,106,85,.7))}
@@ -106,8 +109,8 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .lk.shut .st{color:var(--bad)}.lk.open .st,.lk.hold .st{color:var(--neon)}
 .lk.jolt{animation:jolt .4s}
 @keyframes jolt{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.lk.N,.lk.S{left:38%;display:flex;gap:4px 10px;align-items:baseline;justify-content:center;flex-wrap:wrap;width:24%}.lk.N{top:-34px}.lk.S{bottom:-34px}
-.lk.N .v,.lk.S .v{margin-top:0}.lk.N .st,.lk.S .st{margin-top:0}.lk.N .tg,.lk.S .tg{width:auto;order:-1;margin:0}.lk.N .n,.lk.S .n{order:-2;width:auto}.lk.N .n::after,.lk.S .n::after{content:" ·"}.lk.N,.lk.S{width:34%;left:33%;row-gap:2px}
+.lk.N,.lk.S{left:38%;display:flex;gap:4px 10px;align-items:baseline;justify-content:center;flex-wrap:wrap;width:24%}.lk.N{top:-34px}.lk.S{top:calc(100% - 22px);bottom:auto}
+.lk.N .v,.lk.S .v{margin-top:0}.lk.N .st,.lk.S .st{margin-top:0}.lk.N .tg,.lk.S .tg{width:auto;order:-1;margin:0}.lk.N .n,.lk.S .n{order:-2;width:auto}.lk.N .n::after,.lk.S .n::after{content:" ·"}.lk.N,.lk.S{width:max-content;max-width:96%;left:0;right:0;margin:0 auto;row-gap:2px;flex-wrap:nowrap;align-items:baseline}
 .lk.E{right:0;top:50%;transform:translateY(-50%);text-align:left;width:22%}.lk.W{left:0;top:50%;transform:translateY(-50%);text-align:right;width:22%}
 .dialc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:20%;text-align:center;pointer-events:none}
 .dialc .k{font:600 9.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
@@ -286,6 +289,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
       <p>The board has set four tests for FY29. Think of them as <em>four locks on one vault</em>.</p>
       <p>We tested six paths. Only one passes all four tests. <em>Hold the green dot to enter.</em></p>
     </div>
+    <p class="holdcue" aria-hidden="true">Click and hold to open</p>
     <button class="hold" id="hold" aria-label="Hold to enter the vault. Keyboard: hold Space or Enter.">
       <svg viewBox="0 0 132 132" aria-hidden="true"><circle class="trk" cx="66" cy="66" r="63"/><circle class="bar2" id="holdBar" cx="66" cy="66" r="63" stroke-dasharray="396" stroke-dashoffset="396"/></svg>
       <span class="core"></span>
