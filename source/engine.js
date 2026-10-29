@@ -57,7 +57,7 @@ const V = (function vault() {
         float k = kc + float(j); float zk = uZ0 - (k + 0.5) * uBay;
         for (int q = 0; q < 2; q++) {
           float s = q == 0 ? -1.0 : 1.0; float I = lampI(k, s); if (I <= 0.0) continue; I *= gate(P.z, zk);
-          vec3 C = vec3(s * (uW * 0.5 - 0.07), clamp(P.y, uLampY + 0.06, uLampY + 6.8), zk);
+          vec3 C = vec3(s * (uW * 0.5 - 0.07), clamp(P.y, uLampY + 0.06, 8.55), zk);
           vec3 L = C - P; float d2 = dot(L, L) + 0.04; vec3 l = L * inversesqrt(d2);
           float rc = max(dot(N, l), 0.0);
           vec3 F = vec3(s * (uW * 0.5 - 0.16), uLampY + 0.05, zk); vec3 Lf = F - P; float f2 = dot(Lf, Lf) + 0.02;
@@ -76,7 +76,7 @@ const V = (function vault() {
     }
     vec3 lightAt(vec3 P, vec3 N){
       vec3 E = uAmb + bounce(P, N) + ringL(P, N, uRing0, uRingR.x) + ringL(P, N, uRing1, uRingR.y);
-      vec3 Lt = uTorch.xyz - P; float t2 = dot(Lt, Lt) + 0.6; E += vec3(0.55, 0.75, 0.45) * uTorch.w * max(dot(N, Lt * inversesqrt(t2)), 0.0) / t2;
+      vec3 Lt = uTorch.xyz - P; float t2 = dot(Lt, Lt) + 0.35; E += vec3(0.55, 0.75, 0.45) * uTorch.w * max(dot(N, Lt * inversesqrt(t2)), 0.0) / t2;
       return E;
     }
     // the uplight on this wall: a beam that widens with height, energy spread over its width, plus a soft wash and the lens glare
@@ -93,7 +93,8 @@ const V = (function vault() {
         float glare = 0.006 / (d2 + 0.003);
         vec3 l = L * inversesqrt(d2 + 1e-4);
         float relief = clamp(1.0 + 3.4 * dot(N - n0, l), 0.2, 2.4);
-        sum += I * ((core + wash) * on + glare) * relief;
+        float cove = exp(-dz * dz / 0.25) * smoothstep(7.4, 8.9, P.y) * 0.5;
+        sum += I * ((core + wash) * on + glare + cove) * relief;
       }
       return sum * uLampCol;
     }`;
@@ -127,6 +128,13 @@ const V = (function vault() {
       #ifdef WALL
         E += stripes(vW, N, uSide);
       #endif
+      #ifdef CEIL
+        { float kc = floor((uZ0 - vW.z) / uBay);
+          for (int j = -2; j <= 2; j++) { float k = kc + float(j); float zk = uZ0 - (k + 0.5) * uBay;
+            for (int q = 0; q < 2; q++) { float s = q == 0 ? -1.0 : 1.0; float I = lampI(k, s); if (I <= 0.0) continue; I *= gate(vW.z, zk);
+              float dx = uW * 0.5 - s * vW.x, dz = vW.z - zk;
+              E += uLampCol * I * (exp(-(dx * dx) / 0.5 - dz * dz / 0.35) * 0.55 + exp(-(dx * dx) / 3.0 - dz * dz / 1.6) * 0.12); } } }
+      #endif
       vec3 col = alb * E + uEmit;
       #ifdef FLOOR
         vec2 suv = gl_FragCoord.xy / uRes + (N.xz - vec2(0.0)) * 0.012;
@@ -142,7 +150,7 @@ const V = (function vault() {
       gl_FragColor = vec4(col, 1.0);
     }`;
   function surf(opts) {
-    const d = {}; if (opts.wall) d.WALL = ""; if (opts.floor) d.FLOOR = "";
+    const d = {}; if (opts.wall) d.WALL = ""; if (opts.floor) d.FLOOR = ""; if (opts.ceil) d.CEIL = "";
     const m = new THREE.ShaderMaterial({
       defines: d, vertexShader: VERT, fragmentShader: FRAG, side: opts.side || THREE.FrontSide,
       uniforms: Object.assign({}, U, {
@@ -181,7 +189,7 @@ const V = (function vault() {
   mk(new THREE.PlaneGeometry(LEN, HH), surf(Object.assign({}, wallOpt, { wallSide: 1 })), [W / 2, HH / 2, zc], [0, -Math.PI / 2, 0]);
   const floorMat = surf({ map: floorA, hmap: floorH, rep: [1, NB], hw: 512, hh: 256, relief: 1.4, alb: 0.5, floor: true });
   const floor = mk(new THREE.PlaneGeometry(W, LEN), floorMat, [0, 0, zc], [-Math.PI / 2, 0, 0]);
-  mk(new THREE.PlaneGeometry(W, LEN), surf({ map: ceilA, rep: [1, NB], hw: 512, hh: 256, relief: 0.8, alb: 0.6 }), [0, HH, zc], [Math.PI / 2, 0, 0]);
+  mk(new THREE.PlaneGeometry(W, LEN), surf({ map: ceilA, rep: [1, NB], hw: 512, hh: 256, relief: 0.8, alb: 0.6, ceil: true }), [0, HH, zc], [Math.PI / 2, 0, 0]);
 
   /* ---------------- lamp fixtures: housing + lens (HDR emissive, it is what blooms) + the beam in the haze */
   const NL = NB * 2, L = [];
@@ -195,7 +203,7 @@ const V = (function vault() {
     q.setFromEuler(e3.set(-Math.PI / 2, 0, l.s * 0.0)); m4.compose(new THREE.Vector3(l.s * (W / 2 - 0.16), LAMP_Y + 0.052, l.z), q, one); lens.setMatrixAt(i, m4); lens.setColorAt(i, black);
   });
   world.add(housing); world.add(lens);
-  const TL = 6.8, tgeo = new THREE.CylinderGeometry(0.02, 0.02, TL, 10, 32, false), tIdx = new Float32Array(NL * 2);
+  const TL = HH - 0.4 - LAMP_Y - 0.06, tgeo = new THREE.CylinderGeometry(0.02, 0.02, TL, 10, 32, false), tIdx = new Float32Array(NL * 2);
   L.forEach((l, i) => tIdx.set([l.k, l.s], i * 2)); tgeo.setAttribute("aIdx", new THREE.InstancedBufferAttribute(tIdx, 2));
   const tubes = new THREE.InstancedMesh(tgeo, new THREE.ShaderMaterial({
     uniforms: Object.assign({}, U, { uTL: { value: TL } }),
@@ -203,7 +211,7 @@ const V = (function vault() {
       void main(){ vec4 w = modelMatrix * instanceMatrix * vec4(position, 1.0); vec4 mv = viewMatrix * w; vD = length(mv.xyz); vH = position.y / uTL + 0.5;
         vI = texture2D(uLamp, vec2((aIdx.x + 0.5) / uNB, aIdx.y < 0.0 ? 0.25 : 0.75)).r * 2.0; gl_Position = projectionMatrix * mv; }`,
     fragmentShader: `uniform vec3 uLampCol; uniform float uTL, uFog; varying float vH; varying float vI; varying float vD;
-      void main(){ float h = vH * uTL; float p = 0.16 + 0.84 * exp(-h / 2.3); float tip = smoothstep(1.0, 0.93, vH);
+      void main(){ float h = vH * uTL; float p = 0.16 + 0.84 * exp(-h / 2.3); float tip = 0.35 + 0.65 * smoothstep(1.0, 0.82, vH);
         vec3 c = uLampCol * vI * p * 1.5 * tip; c = mix(vec3(0.0004, 0.0007, 0.0005), c, exp(-pow(uFog * vD, 2.0))); gl_FragColor = vec4(c, 1.0); }`,
   }), NL);
   L.forEach((l, i) => { q.setFromEuler(e3.set(0, 0, 0)); m4.compose(new THREE.Vector3(l.s * (W / 2 - 0.07), LAMP_Y + 0.06 + TL / 2, l.z), q, one); tubes.setMatrixAt(i, m4); });
@@ -473,7 +481,7 @@ const V = (function vault() {
       if (d.y > 1e-4) tt = Math.min(tt, (HH - o.y) / d.y); if (d.y < -1e-4) tt = Math.min(tt, (0 - o.y) / d.y);
       const hp = o.clone().addScaledVector(d, Math.max(0.5, tt - 1.1)); const tv = U.uTorch.value; tv.x += (hp.x - tv.x) * b; tv.y += (hp.y - tv.y) * b; tv.z += (hp.z - tv.z) * b;
     }
-    U.uTorch.value.w = st.torch * 0.55;
+    U.uTorch.value.w = st.torch * 1.5;
     comp.uniforms.uExpo.value = st.expo;
     if (!document.hidden) {
       // 1. reflection: mirror the world in the floor plane and render from the same camera

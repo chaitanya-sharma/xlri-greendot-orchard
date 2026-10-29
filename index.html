@@ -387,6 +387,17 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .hb.ghost{display:none}
 .inside .hb.ghost{display:inline-block;animation:fs .5s ease}
 
+.steps{display:flex;align-items:center;gap:2px;margin-left:18px;padding:4px;border:1px solid var(--line);border-radius:2px;background:rgba(3,5,4,.55)}
+.steps button{display:flex;align-items:center;gap:7px;background:none;border:none;color:var(--faint);font:600 10px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:2px;cursor:pointer}
+.steps button:disabled{cursor:default;opacity:.55}
+.steps button i{font-style:normal;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line-2);font-size:9.5px}
+.steps button.cur{color:var(--ink);background:rgba(183,240,94,.1)}.steps button.cur i{background:var(--neon);color:#07100A;border-color:var(--neon);box-shadow:0 0 8px var(--green)}
+.steps button.done{color:var(--mute)}.steps button.done i{border-color:var(--neon);color:var(--neon)}
+.steps em{font-style:normal;color:var(--neon)}
+.hb,.hud .team,.steps button{white-space:nowrap}
+@media (max-width:1560px){.show-pips .steps span{display:none}.show-pips .steps button{padding:5px}.show-pips .steps button.cur span{display:inline}}
+@media (max-width:1180px){.steps span,.show-pips .steps button.cur span{display:none}.steps button{padding:5px}}
+@media (max-width:640px){.steps{display:none}}
 /* ---------- scenes ---------- */
 .scene{position:fixed;inset:0;z-index:10;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s linear .7s;overflow:hidden}
 .scene.on{opacity:1;visibility:visible;transition:opacity .9s ease .1s,visibility 0s}
@@ -413,7 +424,8 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .hold:hover .core,.hold:focus-visible .core{transform:scale(1.25)}
 @keyframes breathe{0%,100%{box-shadow:0 0 10px var(--green),0 0 26px rgba(134,188,37,.45)}50%{box-shadow:0 0 18px var(--green),0 0 48px rgba(134,188,37,.75)}}
 .holdlab{margin-top:22px;font:600 11px/1.4 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--neon)}
-.holdlab small{display:block;color:var(--faint);letter-spacing:.12em;margin-top:6px;font-weight:500}
+.holdlab{position:relative;z-index:2;text-shadow:0 0 14px #000,0 0 4px #000}
+.holdlab small{display:table;color:#D3DDD5;letter-spacing:.12em;margin:10px auto 0;font-weight:500;background:rgba(3,5,4,.82);border:1px solid var(--line);padding:6px 10px;border-radius:2px}
 .foot{position:absolute;left:max(20px,env(safe-area-inset-left,0px));right:max(20px,env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .foot .people{font-size:13px}
 .skip{font:600 10.5px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;border-bottom:1px solid var(--line-2);padding:4px 0;cursor:pointer}
@@ -559,6 +571,8 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .ovl .oh .hb{margin-left:auto}
 .ovl .archive{padding:0}
 
+.cursor-hint{background:rgba(5,8,6,.9);border:1px solid var(--line-2);color:#D3DDD5!important;padding:9px 14px 9px 30px;border-radius:2px;max-width:min(92vw,640px);white-space:normal!important;text-align:center}
+.cursor-hint::before{content:"";position:absolute;left:12px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--green);animation:breathe 2s infinite}
 .cursor-hint{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:12;font:500 10.5px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);pointer-events:none;opacity:0;transition:opacity .6s;white-space:nowrap}
 .cursor-hint.on{opacity:1}
 
@@ -598,6 +612,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
   <img src="data:image/png;base64,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" alt="Deloitte" width="80" height="15">
   <span class="sep"></span>
   <span class="team"><span class="ringmark"></span>Team Green Dot</span>
+  <nav class="steps" id="steps" aria-label="Your progress"><button disabled><i>1</i><span>Enter</span></button><button><i>2</i><span>Open the door</span></button><button disabled><i>3</i><span>Explore <em id="stepN"></em></span></button><button disabled><i>4</i><span>The ask</span></button></nav>
   <div class="pips" id="pips" aria-label="Board tests">
     <span class="pl">Board tests</span>
     <span class="pip" data-i="0" title="Growth 5-6% a year"><i></i>G <b>-</b></span>
@@ -609,7 +624,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
     <button class="hb" id="bBrief">Brief</button>
     <button class="hb ghost" id="bPlan">Plan</button>
     <button class="hb" id="bArch">Archive</button>
-    <button class="hb" id="bSound" aria-pressed="false" title="Sound">Sound</button>
+    <button class="hb" id="bSound" aria-pressed="false" title="Sound">Sound off</button>
   </div>
 </header>
 
@@ -1449,10 +1464,10 @@ waterfall(false);
 
 
 /* ================================================ sound: synthesised, off until asked for */
-const AU = { on: false, ctx: null };
+const AU = { on: false, ctx: null, user: null };
 function snd(kind) {
   if (!AU.on) return;
-  const c = AU.ctx || (AU.ctx = new (window.AudioContext || window.webkitAudioContext)());
+  const c = AU.ctx || (AU.ctx = new (window.AudioContext || window.webkitAudioContext)()); if (c.state === "suspended") c.resume();
   const t = c.currentTime, out = c.createGain(); out.gain.value = 0.5; out.connect(c.destination);
   const env = (g, a, peak, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
   const noise = (dur) => { const b = c.createBuffer(1, c.sampleRate * dur, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(); s.buffer = b; return s; };
@@ -1463,9 +1478,36 @@ function snd(kind) {
     const s = noise(0.05), f = c.createBiquadFilter(), g2 = c.createGain(); f.type = "highpass"; f.frequency.value = 1800; env(g2, 0.001, 0.12, 0.05); s.connect(f).connect(g2).connect(out); s.start(t);
   }
   if (kind === "open") { const s = noise(3.2), f = c.createBiquadFilter(), g = c.createGain(); f.type = "lowpass"; f.frequency.setValueAtTime(90, t); f.frequency.linearRampToValueAtTime(380, t + 1.6); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.9); g.gain.exponentialRampToValueAtTime(0.0001, t + 3.1); s.connect(f).connect(g).connect(out); s.start(t); }
+  if (kind === "strike") { const o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(); o.type = "square"; o.frequency.value = 100 + Math.random() * 40; f.type = "bandpass"; f.frequency.value = 900 + Math.random() * 600; f.Q.value = 4; env(g, 0.003, 0.05, 0.09); o.connect(f).connect(g).connect(out); o.start(t); o.stop(t + 0.2);
+    const s2 = noise(0.02), g2 = c.createGain(); env(g2, 0.001, 0.08, 0.02); s2.connect(g2).connect(out); s2.start(t); }
+  if (kind === "whoosh") { const s2 = noise(1.2), f = c.createBiquadFilter(), g = c.createGain(); f.type = "bandpass"; f.Q.value = 1.2; f.frequency.setValueAtTime(260, t); f.frequency.exponentialRampToValueAtTime(1400, t + 0.5); f.frequency.exponentialRampToValueAtTime(380, t + 1.1);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.14, t + 0.35); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.15); s2.connect(f).connect(g).connect(out); s2.start(t); }
+  if (kind === "hover") { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = 1800; env(g, 0.002, 0.025, 0.04); o.connect(g).connect(out); o.start(t); o.stop(t + 0.08); }
   if (kind === "hum") { const o = c.createOscillator(), g = c.createGain(); o.type = "triangle"; o.frequency.value = 110; env(g, 0.3, 0.06, 1.4); o.connect(g).connect(out); o.start(t); o.stop(t + 2); }
   if (kind === "chime") [523.25, 783.99, 1046.5].forEach((fq, i) => { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = fq; g.gain.setValueAtTime(0.0001, t + i * 0.09); g.gain.exponentialRampToValueAtTime(0.12, t + i * 0.09 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.09 + 1.6); o.connect(g).connect(out); o.start(t + i * 0.09); o.stop(t + 2); });
 }
+
+
+/* room tone: two low detuned tones and filtered air, swelling slowly; plus per-lamp strikes and camera whooshes */
+const AMB = { nodes: null };
+function ambient(on) {
+  if (!AU.ctx) { try { AU.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+  const c = AU.ctx; if (c.state === "suspended") c.resume();
+  if (!AMB.nodes) {
+    const master = c.createGain(); master.gain.value = 0; master.connect(c.destination);
+    const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 420; lp.Q.value = 0.7; lp.connect(master);
+    [[55, 0.06], [55.35, 0.05], [82.4, 0.025], [110.2, 0.012]].forEach(([f, g]) => { const o = c.createOscillator(), gg = c.createGain(); o.type = "sine"; o.frequency.value = f; gg.gain.value = g; o.connect(gg).connect(lp); o.start(); });
+    const b = c.createBuffer(1, c.sampleRate * 4, c.sampleRate), d = b.getChannelData(0); let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.2; }
+    const n = c.createBufferSource(); n.buffer = b; n.loop = true; const ng = c.createGain(); ng.gain.value = 0.16; n.connect(ng).connect(lp); n.start();
+    const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 140; lfo.connect(lg).connect(lp.frequency); lfo.start();
+    AMB.nodes = { master };
+  }
+  const g = AMB.nodes.master.gain, t = c.currentTime; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(on ? 0.55 : 0, t + (on ? 2.5 : 0.6));
+}
+function setSound(on, user) {
+  AU.on = on; if (user) AU.user = on; const b = $("#bSound"); b.setAttribute("aria-pressed", String(on)); b.textContent = on ? "Sound on" : "Sound off"; ambient(on);
+}
+function strikes(n, gap) { if (!AU.on) return; for (let i = 0; i < n; i++) setTimeout(() => snd("strike"), i * gap + Math.random() * 40); }
 
 /* ================================================ the vault (WebGL)
    Linear HDR pipeline: planar floor reflection -> lit scene (MSAA) -> dual-filter bloom -> ACES, fringe, vignette, dither.
@@ -1526,7 +1568,7 @@ const V = (function vault() {
         float k = kc + float(j); float zk = uZ0 - (k + 0.5) * uBay;
         for (int q = 0; q < 2; q++) {
           float s = q == 0 ? -1.0 : 1.0; float I = lampI(k, s); if (I <= 0.0) continue; I *= gate(P.z, zk);
-          vec3 C = vec3(s * (uW * 0.5 - 0.07), clamp(P.y, uLampY + 0.06, uLampY + 6.8), zk);
+          vec3 C = vec3(s * (uW * 0.5 - 0.07), clamp(P.y, uLampY + 0.06, 8.55), zk);
           vec3 L = C - P; float d2 = dot(L, L) + 0.04; vec3 l = L * inversesqrt(d2);
           float rc = max(dot(N, l), 0.0);
           vec3 F = vec3(s * (uW * 0.5 - 0.16), uLampY + 0.05, zk); vec3 Lf = F - P; float f2 = dot(Lf, Lf) + 0.02;
@@ -1545,7 +1587,7 @@ const V = (function vault() {
     }
     vec3 lightAt(vec3 P, vec3 N){
       vec3 E = uAmb + bounce(P, N) + ringL(P, N, uRing0, uRingR.x) + ringL(P, N, uRing1, uRingR.y);
-      vec3 Lt = uTorch.xyz - P; float t2 = dot(Lt, Lt) + 0.6; E += vec3(0.55, 0.75, 0.45) * uTorch.w * max(dot(N, Lt * inversesqrt(t2)), 0.0) / t2;
+      vec3 Lt = uTorch.xyz - P; float t2 = dot(Lt, Lt) + 0.35; E += vec3(0.55, 0.75, 0.45) * uTorch.w * max(dot(N, Lt * inversesqrt(t2)), 0.0) / t2;
       return E;
     }
     // the uplight on this wall: a beam that widens with height, energy spread over its width, plus a soft wash and the lens glare
@@ -1562,7 +1604,8 @@ const V = (function vault() {
         float glare = 0.006 / (d2 + 0.003);
         vec3 l = L * inversesqrt(d2 + 1e-4);
         float relief = clamp(1.0 + 3.4 * dot(N - n0, l), 0.2, 2.4);
-        sum += I * ((core + wash) * on + glare) * relief;
+        float cove = exp(-dz * dz / 0.25) * smoothstep(7.4, 8.9, P.y) * 0.5;
+        sum += I * ((core + wash) * on + glare + cove) * relief;
       }
       return sum * uLampCol;
     }`;
@@ -1596,6 +1639,13 @@ const V = (function vault() {
       #ifdef WALL
         E += stripes(vW, N, uSide);
       #endif
+      #ifdef CEIL
+        { float kc = floor((uZ0 - vW.z) / uBay);
+          for (int j = -2; j <= 2; j++) { float k = kc + float(j); float zk = uZ0 - (k + 0.5) * uBay;
+            for (int q = 0; q < 2; q++) { float s = q == 0 ? -1.0 : 1.0; float I = lampI(k, s); if (I <= 0.0) continue; I *= gate(vW.z, zk);
+              float dx = uW * 0.5 - s * vW.x, dz = vW.z - zk;
+              E += uLampCol * I * (exp(-(dx * dx) / 0.5 - dz * dz / 0.35) * 0.55 + exp(-(dx * dx) / 3.0 - dz * dz / 1.6) * 0.12); } } }
+      #endif
       vec3 col = alb * E + uEmit;
       #ifdef FLOOR
         vec2 suv = gl_FragCoord.xy / uRes + (N.xz - vec2(0.0)) * 0.012;
@@ -1611,7 +1661,7 @@ const V = (function vault() {
       gl_FragColor = vec4(col, 1.0);
     }`;
   function surf(opts) {
-    const d = {}; if (opts.wall) d.WALL = ""; if (opts.floor) d.FLOOR = "";
+    const d = {}; if (opts.wall) d.WALL = ""; if (opts.floor) d.FLOOR = ""; if (opts.ceil) d.CEIL = "";
     const m = new THREE.ShaderMaterial({
       defines: d, vertexShader: VERT, fragmentShader: FRAG, side: opts.side || THREE.FrontSide,
       uniforms: Object.assign({}, U, {
@@ -1650,7 +1700,7 @@ const V = (function vault() {
   mk(new THREE.PlaneGeometry(LEN, HH), surf(Object.assign({}, wallOpt, { wallSide: 1 })), [W / 2, HH / 2, zc], [0, -Math.PI / 2, 0]);
   const floorMat = surf({ map: floorA, hmap: floorH, rep: [1, NB], hw: 512, hh: 256, relief: 1.4, alb: 0.5, floor: true });
   const floor = mk(new THREE.PlaneGeometry(W, LEN), floorMat, [0, 0, zc], [-Math.PI / 2, 0, 0]);
-  mk(new THREE.PlaneGeometry(W, LEN), surf({ map: ceilA, rep: [1, NB], hw: 512, hh: 256, relief: 0.8, alb: 0.6 }), [0, HH, zc], [Math.PI / 2, 0, 0]);
+  mk(new THREE.PlaneGeometry(W, LEN), surf({ map: ceilA, rep: [1, NB], hw: 512, hh: 256, relief: 0.8, alb: 0.6, ceil: true }), [0, HH, zc], [Math.PI / 2, 0, 0]);
 
   /* ---------------- lamp fixtures: housing + lens (HDR emissive, it is what blooms) + the beam in the haze */
   const NL = NB * 2, L = [];
@@ -1664,7 +1714,7 @@ const V = (function vault() {
     q.setFromEuler(e3.set(-Math.PI / 2, 0, l.s * 0.0)); m4.compose(new THREE.Vector3(l.s * (W / 2 - 0.16), LAMP_Y + 0.052, l.z), q, one); lens.setMatrixAt(i, m4); lens.setColorAt(i, black);
   });
   world.add(housing); world.add(lens);
-  const TL = 6.8, tgeo = new THREE.CylinderGeometry(0.02, 0.02, TL, 10, 32, false), tIdx = new Float32Array(NL * 2);
+  const TL = HH - 0.4 - LAMP_Y - 0.06, tgeo = new THREE.CylinderGeometry(0.02, 0.02, TL, 10, 32, false), tIdx = new Float32Array(NL * 2);
   L.forEach((l, i) => tIdx.set([l.k, l.s], i * 2)); tgeo.setAttribute("aIdx", new THREE.InstancedBufferAttribute(tIdx, 2));
   const tubes = new THREE.InstancedMesh(tgeo, new THREE.ShaderMaterial({
     uniforms: Object.assign({}, U, { uTL: { value: TL } }),
@@ -1672,7 +1722,7 @@ const V = (function vault() {
       void main(){ vec4 w = modelMatrix * instanceMatrix * vec4(position, 1.0); vec4 mv = viewMatrix * w; vD = length(mv.xyz); vH = position.y / uTL + 0.5;
         vI = texture2D(uLamp, vec2((aIdx.x + 0.5) / uNB, aIdx.y < 0.0 ? 0.25 : 0.75)).r * 2.0; gl_Position = projectionMatrix * mv; }`,
     fragmentShader: `uniform vec3 uLampCol; uniform float uTL, uFog; varying float vH; varying float vI; varying float vD;
-      void main(){ float h = vH * uTL; float p = 0.16 + 0.84 * exp(-h / 2.3); float tip = smoothstep(1.0, 0.93, vH);
+      void main(){ float h = vH * uTL; float p = 0.16 + 0.84 * exp(-h / 2.3); float tip = 0.35 + 0.65 * smoothstep(1.0, 0.82, vH);
         vec3 c = uLampCol * vI * p * 1.5 * tip; c = mix(vec3(0.0004, 0.0007, 0.0005), c, exp(-pow(uFog * vD, 2.0))); gl_FragColor = vec4(c, 1.0); }`,
   }), NL);
   L.forEach((l, i) => { q.setFromEuler(e3.set(0, 0, 0)); m4.compose(new THREE.Vector3(l.s * (W / 2 - 0.07), LAMP_Y + 0.06 + TL / 2, l.z), q, one); tubes.setMatrixAt(i, m4); });
@@ -1942,7 +1992,7 @@ const V = (function vault() {
       if (d.y > 1e-4) tt = Math.min(tt, (HH - o.y) / d.y); if (d.y < -1e-4) tt = Math.min(tt, (0 - o.y) / d.y);
       const hp = o.clone().addScaledVector(d, Math.max(0.5, tt - 1.1)); const tv = U.uTorch.value; tv.x += (hp.x - tv.x) * b; tv.y += (hp.y - tv.y) * b; tv.z += (hp.z - tv.z) * b;
     }
-    U.uTorch.value.w = st.torch * 0.55;
+    U.uTorch.value.w = st.torch * 1.5;
     comp.uniforms.uExpo.value = st.expo;
     if (!document.hidden) {
       // 1. reflection: mirror the world in the floor plane and render from the same camera
@@ -1995,7 +2045,9 @@ const sheet = $("#sheet"), chs = $$(".ch", sheet), body = document.body;
 const hint = $("#hint");
 function setHint(t) { hint.textContent = t || ""; hint.classList.toggle("on", !!t); }
 function show(name) {
-  S.scene = name;
+  S.scene = name; setTimeout(steps, 0);
+  const coach = { hub: "Pick any room on the plan, or press the green button to go in order.", chamber: "Scroll inside the panel for more. Use the buttons at the bottom, or the arrow keys, to move on.", ask: "Hold the button to give the board's answer." }[name];
+  if (coach !== undefined) setHint(coach); else if (name !== "door") setHint("");
   Object.entries(scenes).forEach(([k, n]) => n.classList.toggle("on", k === name));
   if (name !== "chamber") sheet.classList.remove("on");
   body.classList.toggle("reading", name === "chamber");
@@ -2026,7 +2078,7 @@ function holdControl(btn, ms, onProgress, onDone) {
   return { reset() { p = 0; done = false; dir = 0; onProgress(0); } };
 }
 const holdBar = $("#holdBar"), holdBtn = $("#hold");
-holdControl(holdBtn, 1300, (p) => { holdBar.style.strokeDashoffset = String(396 * (1 - p)); holdBtn.style.transform = `scale(${1 + p * 0.06})`; if (V) V.charge(p); }, () => { if (V) { V.charge(0); V.shake(0.35); } vib([10, 40, 18]); enterDoor(); });
+holdControl(holdBtn, 1300, (p) => { holdBar.style.strokeDashoffset = String(396 * (1 - p)); holdBtn.style.transform = `scale(${1 + p * 0.06})`; if (V) V.charge(p); }, () => { if (AU.user !== false) setSound(true); if (V) { V.charge(0); V.shake(0.35); } vib([10, 40, 18]); snd("bolt"); enterDoor(); });
 function fitIntro() { if (V) V.to(V.fit(holdBtn.getBoundingClientRect(), V.DOOR_Z, 0.96), 4); }
 async function intro() {
   show("intro"); if (V) { V.rings[0].tI = 1; V.dust(0.35); V.torch(0.9); V.st.texpo = 1.15; fitIntro(); V.jump(); }
@@ -2143,16 +2195,16 @@ $("#sDoor .in").addEventListener("scroll", () => { if (V) { fitDoor(); V.st.rate
 async function enterDoor() {
   if (S.scene === "door") return;
   show("door"); paintLocks(TODAY, false); verdict(null); setPips(TODAY.v, TODAY.s);
+  strikes(14, 95);
   if (V) { V.approach(); V.dust(1); V.torch(0.22); V.st.texpo = 1; V.st.rate = 0.9; fitDoor(); setTimeout(fitDoor, 1100); }
-  setHint("Drag the dial, scroll on it, or pick a key");
-  setTimeout(() => setHint(""), 6000);
+  setHint("Start here: pick a key on the left, or drag the dial. Watch the four locks.");
 }
 async function openVault() {
   if (S.open) return; S.open = true;
   [0, 1, 2, 3].forEach((i) => V && V.bolt(i, true));
   snd("open"); setHint(""); show("hub-wait"); scenes.door.classList.remove("on");
   vib([30, 60, 30, 60, 80]);
-  if (V) { await wait(500); V.shake(1); V.burst(); V.swing(true); await wait(700); V.interior(); V.st.rate = 0.75; V.to({ x: 0, y: 3.1, z: V.DOOR_Z - 3.5, yaw: 0 }); V.rings[0].tI = 0.35; await wait(2300); }
+  if (V) { await wait(500); V.shake(1); V.burst(); V.swing(true); await wait(700); V.interior(); strikes(22, 70); V.st.rate = 0.75; V.to({ x: 0, y: 3.1, z: V.DOOR_Z - 3.5, yaw: 0 }); V.rings[0].tI = 0.35; await wait(2300); }
   setPips(PLAN.v, PLAN.s); hub();
 }
 
@@ -2265,6 +2317,7 @@ function openChamber(k) {
   $$("i", dots).forEach((d, i) => { d.className = i === k ? "cur" : S.seen.has(i) ? "seen" : ""; });
   $("#shPrev").textContent = k > 0 ? `← ${String(k).padStart(2, "0")} ${CH[k - 1].n}` : "← The plan";
   $("#shNext").textContent = k < 6 ? `${String(k + 2).padStart(2, "0")} ${CH[k + 1].n} →` : "The board room →";
+  snd("whoosh");
   if (V) { V.st.rate = 1.25; V.to(V.chamberPose(k)); V.torch(0); V.hoverChamber(-1); V.st.thy = 0; if (prev >= 0) V.litChamber(prev, false); V.litChamber(k, true); }
   const was = S.scene === "chamber"; show("chamber");
   sheet.classList.remove("on"); void sheet.offsetWidth;
@@ -2285,7 +2338,7 @@ askIn.addEventListener("scroll", () => fitAsk(9), { passive: true });
 async function goAsk() {
   if (!S.open) openFast();
   if (V) { if (S.ch >= 0) V.litChamber(S.ch, false); V.allOn(); V.rings[1].tI = 1; V.torch(0.06); V.st.rate = 1.3; }
-  show("ask"); askIn.scrollTop = 0; await wait(30); fitAsk(1.3);
+  snd("whoosh"); show("ask"); askIn.scrollTop = 0; await wait(30); fitAsk(1.3);
 }
 const apFill = $("#apFill"), apBtn = $("#approve");
 const approveCtl = holdControl(apBtn, 1500, (p) => { apFill.style.transform = `scaleX(${p})`; apBtn.classList.toggle("filling", p > 0.5); }, async () => {
@@ -2297,6 +2350,18 @@ $("#again").addEventListener("click", () => { location.hash = ""; location.reloa
 $("#askPlan").addEventListener("click", () => { hub(); });
 $("#askArch").addEventListener("click", () => overlay("oArch", true));
 
+
+/* the journey in four steps, always visible in the header */
+function steps() {
+  const at = { intro: 0, door: 1, hub: 2, chamber: 2, ask: 3 }[S.scene] ?? 1;
+  $$("#steps button").forEach((b, i) => {
+    const done = i < at || (i === 1 && S.open) || (i === 2 && S.seen.size === 7);
+    b.classList.toggle("cur", i === at); b.classList.toggle("done", done && i !== at);
+    b.disabled = i === 0 || (i >= 2 && !S.open);
+  });
+  $("#stepN").textContent = S.seen.size ? `${S.seen.size}/7` : "";
+}
+$$("#steps button").forEach((b, i) => b.addEventListener("click", () => { if (i === 1 && !S.open) enterDoor(); else if (i === 1) hub(); else if (i === 2) hub(); else if (i === 3) goAsk(); }));
 /* ------------------------------------------------ overlays, HUD, keys */
 let lastFocus = null;
 function overlay(id, on) {
@@ -2307,7 +2372,8 @@ $$(".ovl").forEach((o) => { o.addEventListener("click", (e) => { if (e.target ==
 $("#bBrief").addEventListener("click", () => overlay("oBrief", true));
 $("#skipBrief").addEventListener("click", () => overlay("oBrief", true));
 $("#bArch").addEventListener("click", () => overlay("oArch", true));
-$("#bSound").addEventListener("click", (e) => { AU.on = !AU.on; e.currentTarget.setAttribute("aria-pressed", String(AU.on)); e.currentTarget.textContent = AU.on ? "Sound on" : "Sound"; if (AU.on) snd("tick"); });
+$("#bSound").addEventListener("click", () => { setSound(!AU.on, true); if (AU.on) snd("tick"); });
+$$("button, .room-g").forEach((b) => b.addEventListener("pointerenter", () => snd("hover")));
 addEventListener("keydown", (e) => {
   const t = e.target; if (e.metaKey || e.ctrlKey || e.altKey) return;
   const open = $(".ovl.on");

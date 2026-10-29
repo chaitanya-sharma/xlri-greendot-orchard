@@ -20,10 +20,10 @@ function hideTip() { tip.style.opacity = 0; }
 {{CHARTS_JS}}
 
 /* ================================================ sound: synthesised, off until asked for */
-const AU = { on: false, ctx: null };
+const AU = { on: false, ctx: null, user: null };
 function snd(kind) {
   if (!AU.on) return;
-  const c = AU.ctx || (AU.ctx = new (window.AudioContext || window.webkitAudioContext)());
+  const c = AU.ctx || (AU.ctx = new (window.AudioContext || window.webkitAudioContext)()); if (c.state === "suspended") c.resume();
   const t = c.currentTime, out = c.createGain(); out.gain.value = 0.5; out.connect(c.destination);
   const env = (g, a, peak, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
   const noise = (dur) => { const b = c.createBuffer(1, c.sampleRate * dur, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(); s.buffer = b; return s; };
@@ -34,9 +34,36 @@ function snd(kind) {
     const s = noise(0.05), f = c.createBiquadFilter(), g2 = c.createGain(); f.type = "highpass"; f.frequency.value = 1800; env(g2, 0.001, 0.12, 0.05); s.connect(f).connect(g2).connect(out); s.start(t);
   }
   if (kind === "open") { const s = noise(3.2), f = c.createBiquadFilter(), g = c.createGain(); f.type = "lowpass"; f.frequency.setValueAtTime(90, t); f.frequency.linearRampToValueAtTime(380, t + 1.6); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.9); g.gain.exponentialRampToValueAtTime(0.0001, t + 3.1); s.connect(f).connect(g).connect(out); s.start(t); }
+  if (kind === "strike") { const o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(); o.type = "square"; o.frequency.value = 100 + Math.random() * 40; f.type = "bandpass"; f.frequency.value = 900 + Math.random() * 600; f.Q.value = 4; env(g, 0.003, 0.05, 0.09); o.connect(f).connect(g).connect(out); o.start(t); o.stop(t + 0.2);
+    const s2 = noise(0.02), g2 = c.createGain(); env(g2, 0.001, 0.08, 0.02); s2.connect(g2).connect(out); s2.start(t); }
+  if (kind === "whoosh") { const s2 = noise(1.2), f = c.createBiquadFilter(), g = c.createGain(); f.type = "bandpass"; f.Q.value = 1.2; f.frequency.setValueAtTime(260, t); f.frequency.exponentialRampToValueAtTime(1400, t + 0.5); f.frequency.exponentialRampToValueAtTime(380, t + 1.1);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.14, t + 0.35); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.15); s2.connect(f).connect(g).connect(out); s2.start(t); }
+  if (kind === "hover") { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = 1800; env(g, 0.002, 0.025, 0.04); o.connect(g).connect(out); o.start(t); o.stop(t + 0.08); }
   if (kind === "hum") { const o = c.createOscillator(), g = c.createGain(); o.type = "triangle"; o.frequency.value = 110; env(g, 0.3, 0.06, 1.4); o.connect(g).connect(out); o.start(t); o.stop(t + 2); }
   if (kind === "chime") [523.25, 783.99, 1046.5].forEach((fq, i) => { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = fq; g.gain.setValueAtTime(0.0001, t + i * 0.09); g.gain.exponentialRampToValueAtTime(0.12, t + i * 0.09 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.09 + 1.6); o.connect(g).connect(out); o.start(t + i * 0.09); o.stop(t + 2); });
 }
+
+
+/* room tone: two low detuned tones and filtered air, swelling slowly; plus per-lamp strikes and camera whooshes */
+const AMB = { nodes: null };
+function ambient(on) {
+  if (!AU.ctx) { try { AU.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+  const c = AU.ctx; if (c.state === "suspended") c.resume();
+  if (!AMB.nodes) {
+    const master = c.createGain(); master.gain.value = 0; master.connect(c.destination);
+    const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 420; lp.Q.value = 0.7; lp.connect(master);
+    [[55, 0.06], [55.35, 0.05], [82.4, 0.025], [110.2, 0.012]].forEach(([f, g]) => { const o = c.createOscillator(), gg = c.createGain(); o.type = "sine"; o.frequency.value = f; gg.gain.value = g; o.connect(gg).connect(lp); o.start(); });
+    const b = c.createBuffer(1, c.sampleRate * 4, c.sampleRate), d = b.getChannelData(0); let last = 0; for (let i = 0; i < d.length; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.2; }
+    const n = c.createBufferSource(); n.buffer = b; n.loop = true; const ng = c.createGain(); ng.gain.value = 0.16; n.connect(ng).connect(lp); n.start();
+    const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 140; lfo.connect(lg).connect(lp.frequency); lfo.start();
+    AMB.nodes = { master };
+  }
+  const g = AMB.nodes.master.gain, t = c.currentTime; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(on ? 0.55 : 0, t + (on ? 2.5 : 0.6));
+}
+function setSound(on, user) {
+  AU.on = on; if (user) AU.user = on; const b = $("#bSound"); b.setAttribute("aria-pressed", String(on)); b.textContent = on ? "Sound on" : "Sound off"; ambient(on);
+}
+function strikes(n, gap) { if (!AU.on) return; for (let i = 0; i < n; i++) setTimeout(() => snd("strike"), i * gap + Math.random() * 40); }
 
 {{ENGINE_JS}}
 
@@ -53,7 +80,9 @@ const sheet = $("#sheet"), chs = $$(".ch", sheet), body = document.body;
 const hint = $("#hint");
 function setHint(t) { hint.textContent = t || ""; hint.classList.toggle("on", !!t); }
 function show(name) {
-  S.scene = name;
+  S.scene = name; setTimeout(steps, 0);
+  const coach = { hub: "Pick any room on the plan, or press the green button to go in order.", chamber: "Scroll inside the panel for more. Use the buttons at the bottom, or the arrow keys, to move on.", ask: "Hold the button to give the board's answer." }[name];
+  if (coach !== undefined) setHint(coach); else if (name !== "door") setHint("");
   Object.entries(scenes).forEach(([k, n]) => n.classList.toggle("on", k === name));
   if (name !== "chamber") sheet.classList.remove("on");
   body.classList.toggle("reading", name === "chamber");
@@ -84,7 +113,7 @@ function holdControl(btn, ms, onProgress, onDone) {
   return { reset() { p = 0; done = false; dir = 0; onProgress(0); } };
 }
 const holdBar = $("#holdBar"), holdBtn = $("#hold");
-holdControl(holdBtn, 1300, (p) => { holdBar.style.strokeDashoffset = String(396 * (1 - p)); holdBtn.style.transform = `scale(${1 + p * 0.06})`; if (V) V.charge(p); }, () => { if (V) { V.charge(0); V.shake(0.35); } vib([10, 40, 18]); enterDoor(); });
+holdControl(holdBtn, 1300, (p) => { holdBar.style.strokeDashoffset = String(396 * (1 - p)); holdBtn.style.transform = `scale(${1 + p * 0.06})`; if (V) V.charge(p); }, () => { if (AU.user !== false) setSound(true); if (V) { V.charge(0); V.shake(0.35); } vib([10, 40, 18]); snd("bolt"); enterDoor(); });
 function fitIntro() { if (V) V.to(V.fit(holdBtn.getBoundingClientRect(), V.DOOR_Z, 0.96), 4); }
 async function intro() {
   show("intro"); if (V) { V.rings[0].tI = 1; V.dust(0.35); V.torch(0.9); V.st.texpo = 1.15; fitIntro(); V.jump(); }
@@ -201,16 +230,16 @@ $("#sDoor .in").addEventListener("scroll", () => { if (V) { fitDoor(); V.st.rate
 async function enterDoor() {
   if (S.scene === "door") return;
   show("door"); paintLocks(TODAY, false); verdict(null); setPips(TODAY.v, TODAY.s);
+  strikes(14, 95);
   if (V) { V.approach(); V.dust(1); V.torch(0.22); V.st.texpo = 1; V.st.rate = 0.9; fitDoor(); setTimeout(fitDoor, 1100); }
-  setHint("Drag the dial, scroll on it, or pick a key");
-  setTimeout(() => setHint(""), 6000);
+  setHint("Start here: pick a key on the left, or drag the dial. Watch the four locks.");
 }
 async function openVault() {
   if (S.open) return; S.open = true;
   [0, 1, 2, 3].forEach((i) => V && V.bolt(i, true));
   snd("open"); setHint(""); show("hub-wait"); scenes.door.classList.remove("on");
   vib([30, 60, 30, 60, 80]);
-  if (V) { await wait(500); V.shake(1); V.burst(); V.swing(true); await wait(700); V.interior(); V.st.rate = 0.75; V.to({ x: 0, y: 3.1, z: V.DOOR_Z - 3.5, yaw: 0 }); V.rings[0].tI = 0.35; await wait(2300); }
+  if (V) { await wait(500); V.shake(1); V.burst(); V.swing(true); await wait(700); V.interior(); strikes(22, 70); V.st.rate = 0.75; V.to({ x: 0, y: 3.1, z: V.DOOR_Z - 3.5, yaw: 0 }); V.rings[0].tI = 0.35; await wait(2300); }
   setPips(PLAN.v, PLAN.s); hub();
 }
 
@@ -323,6 +352,7 @@ function openChamber(k) {
   $$("i", dots).forEach((d, i) => { d.className = i === k ? "cur" : S.seen.has(i) ? "seen" : ""; });
   $("#shPrev").textContent = k > 0 ? `← ${String(k).padStart(2, "0")} ${CH[k - 1].n}` : "← The plan";
   $("#shNext").textContent = k < 6 ? `${String(k + 2).padStart(2, "0")} ${CH[k + 1].n} →` : "The board room →";
+  snd("whoosh");
   if (V) { V.st.rate = 1.25; V.to(V.chamberPose(k)); V.torch(0); V.hoverChamber(-1); V.st.thy = 0; if (prev >= 0) V.litChamber(prev, false); V.litChamber(k, true); }
   const was = S.scene === "chamber"; show("chamber");
   sheet.classList.remove("on"); void sheet.offsetWidth;
@@ -343,7 +373,7 @@ askIn.addEventListener("scroll", () => fitAsk(9), { passive: true });
 async function goAsk() {
   if (!S.open) openFast();
   if (V) { if (S.ch >= 0) V.litChamber(S.ch, false); V.allOn(); V.rings[1].tI = 1; V.torch(0.06); V.st.rate = 1.3; }
-  show("ask"); askIn.scrollTop = 0; await wait(30); fitAsk(1.3);
+  snd("whoosh"); show("ask"); askIn.scrollTop = 0; await wait(30); fitAsk(1.3);
 }
 const apFill = $("#apFill"), apBtn = $("#approve");
 const approveCtl = holdControl(apBtn, 1500, (p) => { apFill.style.transform = `scaleX(${p})`; apBtn.classList.toggle("filling", p > 0.5); }, async () => {
@@ -355,6 +385,18 @@ $("#again").addEventListener("click", () => { location.hash = ""; location.reloa
 $("#askPlan").addEventListener("click", () => { hub(); });
 $("#askArch").addEventListener("click", () => overlay("oArch", true));
 
+
+/* the journey in four steps, always visible in the header */
+function steps() {
+  const at = { intro: 0, door: 1, hub: 2, chamber: 2, ask: 3 }[S.scene] ?? 1;
+  $$("#steps button").forEach((b, i) => {
+    const done = i < at || (i === 1 && S.open) || (i === 2 && S.seen.size === 7);
+    b.classList.toggle("cur", i === at); b.classList.toggle("done", done && i !== at);
+    b.disabled = i === 0 || (i >= 2 && !S.open);
+  });
+  $("#stepN").textContent = S.seen.size ? `${S.seen.size}/7` : "";
+}
+$$("#steps button").forEach((b, i) => b.addEventListener("click", () => { if (i === 1 && !S.open) enterDoor(); else if (i === 1) hub(); else if (i === 2) hub(); else if (i === 3) goAsk(); }));
 /* ------------------------------------------------ overlays, HUD, keys */
 let lastFocus = null;
 function overlay(id, on) {
@@ -365,7 +407,8 @@ $$(".ovl").forEach((o) => { o.addEventListener("click", (e) => { if (e.target ==
 $("#bBrief").addEventListener("click", () => overlay("oBrief", true));
 $("#skipBrief").addEventListener("click", () => overlay("oBrief", true));
 $("#bArch").addEventListener("click", () => overlay("oArch", true));
-$("#bSound").addEventListener("click", (e) => { AU.on = !AU.on; e.currentTarget.setAttribute("aria-pressed", String(AU.on)); e.currentTarget.textContent = AU.on ? "Sound on" : "Sound"; if (AU.on) snd("tick"); });
+$("#bSound").addEventListener("click", () => { setSound(!AU.on, true); if (AU.on) snd("tick"); });
+$$("button, .room-g").forEach((b) => b.addEventListener("pointerenter", () => snd("hover")));
 addEventListener("keydown", (e) => {
   const t = e.target; if (e.metaKey || e.ctrlKey || e.altKey) return;
   const open = $(".ovl.on");
