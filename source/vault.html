@@ -21,9 +21,12 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .hud img{height:15px;display:block}
 .hud .sep{width:1px;height:16px;background:var(--line-2)}
 .pips{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid var(--line);border-radius:2px;background:rgba(3,5,4,.55);opacity:0;transform:translateY(-6px);transition:opacity .6s,transform .6s}
-.show-pips .pips{opacity:1;transform:none}
+.pips{visibility:hidden}.show-pips .pips{opacity:1;transform:none;visibility:visible}
 .pips .pl{font:600 10px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-.pip{display:flex;align-items:center;gap:6px;font:600 10px/1 var(--f-mono);letter-spacing:.08em;color:var(--mute)}
+.pip{display:flex;align-items:center;gap:6px;font:600 10px/1 var(--f-mono);letter-spacing:.06em;color:var(--mute);white-space:nowrap}.pips .pl{white-space:nowrap}
+@media (max-width:1380px){.pips .pl{display:none}}
+@media (max-width:1100px){.pips{display:none}}
+.door .in{padding-bottom:96px}
 .pip i{width:8px;height:8px;border-radius:50%;background:#3A2420;box-shadow:0 0 0 1px rgba(238,106,85,.55);transition:.35s}
 .pip.on i{background:var(--neon);box-shadow:0 0 8px var(--green),0 0 0 1px var(--neon)}
 .pip b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -57,7 +60,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 
 /* intro */
 .intro .in{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-bottom:120px}
-.intro .in > .lines{margin-top:auto}.intro .in > .holdlab{margin-bottom:auto}
+.intro .in > .lines{margin-top:auto}.intro .in > .hold{margin-bottom:auto}
 .intro .eyebrow{justify-content:center;position:absolute;top:calc(74px + env(safe-area-inset-top,0px));left:20px;right:20px}
 .lines{min-height:5.6em;display:grid;place-items:center;margin-bottom:28px}
 .lines p.show{transition-delay:.7s}
@@ -94,7 +97,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 .arc.shut{stroke:#B4523F;filter:drop-shadow(0 0 4px rgba(238,106,85,.7))}
 .arc.open{stroke:var(--neon);filter:drop-shadow(0 0 6px var(--green))}
 .arc.hold{stroke:#9FD36A}
-.lk{position:absolute;width:24%;text-align:center;transition:transform .4s}
+.lk{position:absolute;width:24%;text-align:center;transition:transform .4s;background:rgba(3,5,4,.84);border:1px solid rgba(160,210,100,.16);padding:7px 9px;border-radius:2px;backdrop-filter:blur(6px);text-shadow:0 1px 6px #000}
 .lk .n{font:600 10px/1.25 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .lk .tg{font-size:11.5px;color:var(--faint);margin-top:2px}
 .lk .v{font-family:var(--f-display);font-size:clamp(22px,2.3vw,30px);line-height:1;margin-top:6px;transition:color .4s}
@@ -235,7 +238,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 }
 @media (max-width:640px){
   .hud{gap:10px}.hud .team{display:none}.hud .sep{display:none}
-  .pips{padding:7px 8px;gap:6px}.pips .pl,.pip b{display:none}.pip{font-size:0;gap:0}
+
   .hb{padding:7px 7px;font-size:9px;letter-spacing:.08em}#bSound{display:none}.hbtns{gap:4px}.pips{margin-left:auto}
   .dialspace{aspect-ratio:1/1}
   .keys{grid-template-columns:minmax(0,1fr)}
@@ -262,15 +265,14 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
   <nav class="steps" id="steps" aria-label="Your progress"><button disabled><i>1</i><span>Enter</span></button><button><i>2</i><span>Open the door</span></button><button disabled><i>3</i><span>Explore <em id="stepN"></em></span></button><button disabled><i>4</i><span>The ask</span></button></nav>
   <div class="pips" id="pips" aria-label="Board tests">
     <span class="pl">Board tests</span>
-    <span class="pip" data-i="0" title="Growth 5-6% a year"><i></i>G <b>-</b></span>
-    <span class="pip" data-i="1" title="Better-for-you 12%+ of revenue"><i></i>B <b>-</b></span>
-    <span class="pip" data-i="2" title="Operating margin 11%+"><i></i>M <b>-</b></span>
-    <span class="pip" data-i="3" title="Net debt to EBITDA under 2.5x"><i></i>L <b>-</b></span>
+    <span class="pip" data-i="0" title="Growth 5-6% a year"><i></i>Growth <b>-</b></span>
+    <span class="pip" data-i="1" title="Better-for-you 12%+ of revenue"><i></i>Better-for-you <b>-</b></span>
+    <span class="pip" data-i="2" title="Operating margin 11%+"><i></i>Margin <b>-</b></span>
+    <span class="pip" data-i="3" title="Net debt to EBITDA under 2.5x"><i></i>Leverage <b>-</b></span>
   </div>
   <div class="hbtns">
-    <button class="hb" id="bBrief">Brief</button>
     <button class="hb ghost" id="bPlan">Plan</button>
-    <button class="hb" id="bArch">Archive</button>
+    <button class="hb" id="bArch">Appendix</button>
     <button class="hb" id="bSound" aria-pressed="false" title="Sound">Sound off</button>
   </div>
 </header>
@@ -282,19 +284,18 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
     <div class="lines" aria-live="polite">
       <p>Alderbrook grows <em>2.4%</em> a year. Its board wants <em>5-6%</em>.</p>
       <p>The board has set four tests for FY29. Think of them as <em>four locks on one vault</em>.</p>
-      <p>We found the only key that opens all four. <em>Hold the green dot to enter.</em></p>
+      <p>We tested six paths. Only one passes all four tests. <em>Hold the green dot to enter.</em></p>
     </div>
     <button class="hold" id="hold" aria-label="Hold to enter the vault. Keyboard: hold Space or Enter.">
       <svg viewBox="0 0 132 132" aria-hidden="true"><circle class="trk" cx="66" cy="66" r="63"/><circle class="bar2" id="holdBar" cx="66" cy="66" r="63" stroke-dasharray="396" stroke-dashoffset="396"/></svg>
       <span class="core"></span>
     </button>
-    <p class="holdlab rise d3">Hold to enter<small>About 8 minutes · mouse, touch or keyboard</small></p>
     <div class="foot">
       <div class="credit rise d4">
         <div class="logos"><img src="{{DELOITTE_DARK}}" alt="Deloitte" width="96" height="18"><img src="{{XLRI}}" alt="XLRI Xavier School of Management" width="96" height="40"></div>
         <p class="people"><b>Team Green Dot</b> · Chaitanya Sharma · Saloni Prashant Nazare · XLRI - Xavier School of Management</p>
       </div>
-      <button class="skip rise d5" id="skipBrief">Short on time? Read the one-minute answer</button>
+      
     </div>
   </div>
 </section>
@@ -363,7 +364,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
     <div class="thanks">
       <p>Offer approved for diligence.</p>
       <p class="people"><b>Team Green Dot</b> · Chaitanya Sharma · Saloni Prashant Nazare · XLRI - Xavier School of Management</p>
-      <div class="row"><button class="btn" id="askArch">Open the archive</button><button class="btn" id="askPlan">Back to the plan</button><button class="btn" id="again">Walk it again</button></div>
+      <div class="row"><button class="btn" id="askArch">Open the appendix</button><button class="btn" id="askPlan">Back to the plan</button><button class="btn" id="again">Walk it again</button></div>
     </div>
   </div>
 </section>
@@ -378,7 +379,7 @@ body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.3
 </div>
 <div class="ovl" id="oArch" role="dialog" aria-modal="true" aria-labelledby="archT">
   <div class="box">
-    <div class="oh"><h2 id="archT">The archive</h2><p class="eyebrow"><span>Assumptions, numbers, sources and how we worked</span></p><button class="hb" data-close>Close · Esc</button></div>
+    <div class="oh"><h2 id="archT">Appendix</h2><p class="eyebrow"><span>Assumptions, numbers, sources and how we worked</span></p><button class="hb" data-close>Close · Esc</button></div>
     <div class="archive">
 {{ARCHIVE}}
     </div>

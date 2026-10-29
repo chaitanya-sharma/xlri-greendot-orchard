@@ -87,7 +87,7 @@ function show(name) {
   if (name !== "chamber") sheet.classList.remove("on");
   body.classList.toggle("reading", name === "chamber");
   body.classList.toggle("inside", S.open);
-  $("#hud").classList.toggle("show-pips", S.open || name === "door");
+  $("#hud").classList.toggle("show-pips", name === "door");
   const h = { chamber: "#c" + (S.ch + 1), hub: "#plan", door: "#door", ask: "#ask", intro: "" }[name];
   if (h !== undefined) try { history.replaceState(null, "", location.pathname + location.search + h); } catch (e) {}
 }
@@ -224,6 +224,7 @@ function tryKey(i, fromDial) {
   const sc = $$(".key [data-sc]")[i], n = k.s.filter((s) => s !== "shut").length; sc.textContent = n + "/4"; sc.classList.toggle("full", n === 4);
   $("#tried").textContent = `${S.tried.size} of 6 tried`;
   paintLocks(k, true); verdict(k, i); setPips(k.v, k.s);
+  if (S.tried.size === 1) setTimeout(() => S.scene === "door" && setHint(""), 2500);
 }
 function fitDoor() { if (V && S.scene === "door") V.to(Object.assign(V.fit($("#dialspace").getBoundingClientRect(), V.DOOR_Z, 200 / 510), { par: 0.35 }), V.st.rate); }
 $("#sDoor .in").addEventListener("scroll", () => { if (V) { fitDoor(); V.st.rate = 9; } }, { passive: true });
@@ -404,8 +405,6 @@ function overlay(id, on) {
   o.classList.toggle("on", on); if (on) setTimeout(() => $("[data-close]", o).focus(), 50); else if (lastFocus) lastFocus.focus();
 }
 $$(".ovl").forEach((o) => { o.addEventListener("click", (e) => { if (e.target === o) overlay(o.id, false); }); $("[data-close]", o).addEventListener("click", () => overlay(o.id, false)); });
-$("#bBrief").addEventListener("click", () => overlay("oBrief", true));
-$("#skipBrief").addEventListener("click", () => overlay("oBrief", true));
 $("#bArch").addEventListener("click", () => overlay("oArch", true));
 $("#bSound").addEventListener("click", () => { setSound(!AU.on, true); if (AU.on) snd("tick"); });
 $$("button, .room-g").forEach((b) => b.addEventListener("pointerenter", () => snd("hover")));
