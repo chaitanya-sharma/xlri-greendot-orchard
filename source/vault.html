@@ -1,0 +1,377 @@
+<title>The Graft Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Team Green Dot's recommendation for Project Orchard, Deloitte Capstone 2026, as an interactive vault.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap">
+<style>
+{{BASE_CSS}}
+</style>
+<style>
+/* Experience shell: no page scroll. Scenes sit over a fixed WebGL vault and swap in place. */
+html,body{height:100%;overflow:hidden;scroll-behavior:auto}
+body{padding:0}
+.veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,0) 55%,rgba(2,3,2,.35) 90%,rgba(2,3,2,.6) 100%);transition:background .8s}
+body.reading .veil{background:radial-gradient(130% 100% at 50% 50%,rgba(2,3,2,.35) 30%,rgba(2,3,2,.7) 100%)}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;gap:16px;pointer-events:none;
+  padding:calc(14px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 14px max(18px,env(safe-area-inset-left,0px))}
+.hud > *{pointer-events:auto}
+.hud img{height:15px;display:block}
+.hud .sep{width:1px;height:16px;background:var(--line-2)}
+.pips{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid var(--line);border-radius:2px;background:rgba(3,5,4,.55);opacity:0;transform:translateY(-6px);transition:opacity .6s,transform .6s}
+.show-pips .pips{opacity:1;transform:none}
+.pips .pl{font:600 10px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.pip{display:flex;align-items:center;gap:6px;font:600 10px/1 var(--f-mono);letter-spacing:.08em;color:var(--mute)}
+.pip i{width:8px;height:8px;border-radius:50%;background:#3A2420;box-shadow:0 0 0 1px rgba(238,106,85,.55);transition:.35s}
+.pip.on i{background:var(--neon);box-shadow:0 0 8px var(--green),0 0 0 1px var(--neon)}
+.pip b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.hbtns{display:flex;gap:6px}
+.pips + .hbtns{margin-left:0}
+.hb{font:600 10.5px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:rgba(3,5,4,.55);border:1px solid var(--line-2);padding:8px 10px;border-radius:2px;cursor:pointer;transition:border-color .2s,color .2s}
+.hb:hover{border-color:var(--neon);color:var(--neon)}
+.hb[aria-pressed="true"]{color:var(--neon);border-color:var(--neon)}
+.hb.ghost{display:none}
+.inside .hb.ghost{display:inline-block;animation:fs .5s ease}
+
+/* ---------- scenes ---------- */
+.scene{position:fixed;inset:0;z-index:10;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s linear .7s;overflow:hidden}
+.scene.on{opacity:1;visibility:visible;transition:opacity .9s ease .1s,visibility 0s}
+.scene .in{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  padding:calc(70px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+.rise{opacity:0;transform:translateY(14px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.on .rise{opacity:1;transform:none}
+.on .rise.d1{transition-delay:.25s}.on .rise.d2{transition-delay:.45s}.on .rise.d3{transition-delay:.65s}.on .rise.d4{transition-delay:.85s}.on .rise.d5{transition-delay:1.05s}
+
+/* intro */
+.intro .in{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-bottom:120px}
+.intro .in > .lines{margin-top:auto}.intro .in > .holdlab{margin-bottom:auto}
+.intro .eyebrow{justify-content:center;position:absolute;top:calc(74px + env(safe-area-inset-top,0px));left:20px;right:20px}
+.lines{min-height:5.6em;display:grid;place-items:center;margin-bottom:28px}
+.lines p.show{transition-delay:.7s}
+.lines p{grid-area:1/1;font-family:var(--f-display);font-weight:300;font-size:clamp(24px,3.2vw,40px);line-height:1.2;max-width:22em;opacity:0;transform:translateY(10px);transition:opacity 1s,transform 1s;text-shadow:0 2px 30px #000}
+.lines p.show{opacity:1;transform:none}
+.lines p em{color:var(--neon);font-style:italic}
+.hold{position:relative;width:132px;height:132px;border-radius:50%;border:none;background:none;cursor:pointer;padding:0;touch-action:none;-webkit-user-select:none;user-select:none}
+.hold svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.hold .trk{fill:none;stroke:rgba(183,240,94,.0)}
+.hold .bar2{fill:none;stroke:var(--neon);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--green))}
+.hold .core{all:unset;position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--neon);box-shadow:0 0 14px var(--green),0 0 34px rgba(134,188,37,.6);animation:breathe 2.6s ease-in-out infinite}
+.hold:hover .core,.hold:focus-visible .core{transform:scale(1.25)}
+@keyframes breathe{0%,100%{box-shadow:0 0 10px var(--green),0 0 26px rgba(134,188,37,.45)}50%{box-shadow:0 0 18px var(--green),0 0 48px rgba(134,188,37,.75)}}
+.holdlab{margin-top:22px;font:600 11px/1.4 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--neon)}
+.holdlab small{display:block;color:var(--faint);letter-spacing:.12em;margin-top:6px;font-weight:500}
+.foot{position:absolute;left:max(20px,env(safe-area-inset-left,0px));right:max(20px,env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot .people{font-size:13px}
+.skip{font:600 10.5px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;border-bottom:1px solid var(--line-2);padding:4px 0;cursor:pointer}
+.skip:hover{color:var(--neon);border-color:var(--neon)}
+
+/* door */
+.door-top{text-align:center;max-width:760px;margin:0 auto}
+.door-top h2{font-size:clamp(30px,3.4vw,46px);line-height:1.05;margin-top:10px;text-shadow:0 2px 24px #000}
+.door-top h2 em{color:var(--neon)}
+.door-top .lede{font-size:15.5px;color:#C9D4CC;margin-top:8px;text-shadow:0 1px 12px #000}
+.door-top .eyebrow{justify-content:center}
+.door-grid{display:grid;grid-template-columns:minmax(230px,300px) auto minmax(250px,330px);gap:20px;justify-content:center;align-items:center;max-width:1400px;margin:18px auto 0}
+.dialspace{position:relative;width:min(780px,54vw,calc((100vh - 250px) * 1.5));aspect-ratio:3/2}
+.dialspace svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dialspace{cursor:grab;touch-action:none;margin:46px 0}
+.lk.N,.lk.S{white-space:nowrap}.lk.N .v,.lk.S .v{font-size:clamp(20px,2vw,26px)}.dialspace.grabbing{cursor:grabbing}
+.arc{fill:none;stroke-width:3.2;stroke-linecap:round;transition:stroke .5s,filter .5s}
+.arc.shut{stroke:#B4523F;filter:drop-shadow(0 0 4px rgba(238,106,85,.7))}
+.arc.open{stroke:var(--neon);filter:drop-shadow(0 0 6px var(--green))}
+.arc.hold{stroke:#9FD36A}
+.lk{position:absolute;width:24%;text-align:center;transition:transform .4s}
+.lk .n{font:600 10px/1.25 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.lk .tg{font-size:11.5px;color:var(--faint);margin-top:2px}
+.lk .v{font-family:var(--f-display);font-size:clamp(22px,2.3vw,30px);line-height:1;margin-top:6px;transition:color .4s}
+.lk.shut .v{color:var(--bad)}.lk.open .v{color:var(--neon)}.lk.hold .v{color:#CFE6B0}
+.lk .st{font:600 9.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;margin-top:5px}
+.lk.shut .st{color:var(--bad)}.lk.open .st,.lk.hold .st{color:var(--neon)}
+.lk.jolt{animation:jolt .4s}
+@keyframes jolt{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.lk.N,.lk.S{left:38%;display:flex;gap:4px 10px;align-items:baseline;justify-content:center;flex-wrap:wrap;width:24%}.lk.N{top:-34px}.lk.S{bottom:-34px}
+.lk.N .v,.lk.S .v{margin-top:0}.lk.N .st,.lk.S .st{margin-top:0}.lk.N .tg,.lk.S .tg{width:auto;order:-1;margin:0}.lk.N .n,.lk.S .n{order:-2;width:auto}.lk.N .n::after,.lk.S .n::after{content:" ·"}.lk.N,.lk.S{width:34%;left:33%;row-gap:2px}
+.lk.E{right:0;top:50%;transform:translateY(-50%);text-align:left;width:22%}.lk.W{left:0;top:50%;transform:translateY(-50%);text-align:right;width:22%}
+.dialc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:20%;text-align:center;pointer-events:none}
+.dialc .k{font:600 9.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.dialc .c{font-family:var(--f-display);font-size:clamp(30px,3.6vw,48px);line-height:1;margin-top:6px}
+.dialc .c small{font-size:.45em;color:var(--mute)}
+.keys{display:grid;gap:8px;align-content:center}
+.keys .kh{font:600 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:4px;display:flex;justify-content:space-between}
+.key{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;padding:10px 12px 10px 10px;border:1px solid var(--line);background:rgba(6,10,7,.78);color:var(--ink);border-radius:2px;cursor:pointer;font:inherit;transition:border-color .25s,background .25s,transform .25s}
+.key:hover{border-color:var(--line-2);transform:translateX(3px)}
+.key[aria-pressed="true"]{border-color:var(--neon);background:rgba(183,240,94,.08)}
+.key .kn{position:relative;display:block}.key svg{width:30px;height:16px;display:block}.key .kn i{position:absolute;right:-4px;top:-9px;font:600 9px/1 var(--f-mono);font-style:normal;color:var(--faint)}
+.key.near{border-color:var(--line-2)}.key.near .kn i{color:var(--neon)}
+.key b{display:block;font-size:14px;font-weight:600}
+.key span{font-size:12px;color:var(--mute)}
+.key .sc{font:600 10.5px/1 var(--f-mono);color:var(--faint);letter-spacing:.06em}
+.key .sc.full{color:var(--neon)}
+.key.obvious::after{content:"Try the obvious one";position:absolute;right:10px;top:-8px;font:600 9px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;background:var(--neon);color:#07100A;padding:3px 5px;border-radius:1px}
+.verdict{border:1px solid var(--line-2);background:rgba(6,10,7,.82);backdrop-filter:blur(8px);padding:18px 20px;border-radius:2px;min-height:250px;transition:border-color .4s}
+.verdict.win{border-color:var(--neon);box-shadow:0 0 40px rgba(134,188,37,.18)}
+.verdict .kicker{margin-bottom:8px}
+.verdict h3{font-size:24px;line-height:1.15}
+.verdict p{font-size:14px;line-height:1.5;color:#C9D4CC;margin-top:10px}
+.verdict .why{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+.verdict .btn{margin-top:16px}
+.fadeswap{animation:fs .45s ease}
+@keyframes fs{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* hub (blueprint) */
+.hub .in{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center}
+.hub .in > :first-child{margin-top:auto}.hub .in > :last-child{margin-bottom:auto}
+.hub h2{font-size:clamp(30px,3.6vw,50px);line-height:1.05;margin-top:10px;text-shadow:0 2px 24px #000}
+.hub h2 em{color:var(--neon)}
+.hub .lede{font-size:15.5px;color:#C9D4CC;margin-top:10px;max-width:40em;text-shadow:0 1px 12px #000}
+.hub .eyebrow{justify-content:center}
+.plan{width:min(1060px,100%);margin-top:26px;padding:18px 20px 14px;border:1px solid var(--line);background:rgba(4,7,5,.72);backdrop-filter:blur(8px);border-radius:2px;position:relative}
+.plan::before,.plan::after{content:"";position:absolute;width:14px;height:14px;border:1px solid var(--line-2)}
+.plan::before{left:-1px;top:-1px;border-right:none;border-bottom:none}.plan::after{right:-1px;bottom:-1px;border-left:none;border-top:none}
+.plan .ph{display:flex;justify-content:space-between;font:600 10px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.plan svg{width:100%;height:auto;display:block}
+.room-g{cursor:pointer}
+.room-g rect.box{fill:rgba(10,16,12,.9);stroke:rgba(160,210,100,.38);stroke-width:1.2;transition:fill .25s,stroke .25s}
+.room-g:hover rect.box,.room-g:focus-visible rect.box{stroke:var(--neon);fill:rgba(183,240,94,.08)}
+.room-g.seen rect.box{fill:rgba(134,188,37,.16);stroke:rgba(183,240,94,.7)}
+.room-g:focus{outline:none}
+.room-g text{pointer-events:none}
+.hubcta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px}
+.count{font:600 10.5px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-top:14px}
+.count b{color:var(--neon)}
+
+/* chamber sheet */
+.sheet{position:fixed;z-index:20;top:calc(62px + env(safe-area-inset-top,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(1120px,calc(100vw - 40px));right:max(20px,env(safe-area-inset-right,0px));
+  border:1px solid var(--line-2);background:rgba(4,7,5,.86);backdrop-filter:blur(14px);border-radius:2px;display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;transform:translateX(30px);transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1),visibility 0s linear .6s}
+.sheet.left{right:auto;left:max(20px,env(safe-area-inset-left,0px));transform:translateX(-30px)}
+.sheet.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s .15s,transform .7s cubic-bezier(.2,.8,.2,1) .15s,visibility 0s}
+.sh-top{flex:none;display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.sh-top .crumb{font:600 10.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--neon)}
+.sh-top .crumb span{color:var(--mute)}
+.sh-top .sp{margin-left:auto;display:flex;gap:6px}
+.dots{display:flex;gap:5px;align-items:center}
+.dots i{width:16px;height:3px;background:rgba(160,210,100,.2);border-radius:1px;transition:.3s}
+.dots i.seen{background:rgba(183,240,94,.55)}.dots i.cur{background:var(--neon);box-shadow:0 0 8px var(--green);width:24px}
+.sh-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px 26px;scrollbar-width:thin;scrollbar-color:rgba(160,210,100,.35) transparent}
+.sh-body::-webkit-scrollbar{width:8px}.sh-body::-webkit-scrollbar-thumb{background:rgba(160,210,100,.3);border-radius:4px}
+.ch{display:none}
+.ch.cur{display:block}
+.ch-head{max-width:880px;margin-bottom:20px}
+.ch-head h2{font-size:clamp(26px,2.9vw,40px);line-height:1.08;letter-spacing:-.01em;margin-top:10px}
+.ch-head h2 em{font-style:italic;color:var(--neon)}
+.ch-head .lede{font-size:15.5px;color:#C9D4CC;margin-top:10px}
+.ch .plate{background:
+   radial-gradient(circle at 9px 9px,var(--screw) 1.3px,transparent 1.9px),
+   radial-gradient(circle at calc(100% - 9px) 9px,var(--screw) 1.3px,transparent 1.9px),
+   radial-gradient(circle at 9px calc(100% - 9px),var(--screw) 1.3px,transparent 1.9px),
+   radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),var(--screw) 1.3px,transparent 1.9px),
+   rgba(10,15,12,.7);backdrop-filter:none}
+.ch .plates > *{opacity:0;transform:translateY(12px)}
+.ch.cur.play .plates > *{animation:pl .7s cubic-bezier(.2,.7,.2,1) forwards}
+.ch.cur.play .plates > *:nth-child(2){animation-delay:.08s}.ch.cur.play .plates > *:nth-child(3){animation-delay:.16s}.ch.cur.play .plates > *:nth-child(4){animation-delay:.24s}.ch.cur.play .plates > *:nth-child(5){animation-delay:.32s}.ch.cur.play .plates > *:nth-child(n+6){animation-delay:.4s}
+@keyframes pl{to{opacity:1;transform:none}}
+.ch .src{background:none;padding:0}
+.sh-foot{flex:none;display:flex;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid var(--line)}
+.sh-foot .btn{padding:11px 14px}
+
+/* board room */
+.board .in{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:calc(78px + env(safe-area-inset-top,0px))}
+.board .ringed{width:min(440px,84vw,46vh);aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;flex:none}
+.board h2{font-size:clamp(40px,min(5.6vw,8.4vh),80px);line-height:.98;letter-spacing:-.02em;text-shadow:0 2px 24px #000}
+.board h2 .dot{display:inline-block;width:.15em;height:.15em;border-radius:50%;background:var(--neon);box-shadow:0 0 20px var(--green);margin-left:.03em;transition:transform .8s,box-shadow .8s}
+.board.done h2 .dot{transform:scale(1.5);box-shadow:0 0 26px var(--neon),0 0 60px var(--green)}
+.board .lede{font-family:var(--f-display);font-style:italic;font-size:clamp(15px,2vh,19px);color:#D6E0D8;margin-top:12px;max-width:24ch;text-shadow:0 1px 12px #000}
+.board .eyebrow{justify-content:center}
+.board .two{margin-top:10px}
+.board .gets{margin-top:18px}
+.approve{position:relative;margin-top:22px;font:700 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#07100A;background:rgba(183,240,94,.25);border:1px solid var(--neon);padding:15px 22px;border-radius:2px;cursor:pointer;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;min-width:300px}
+.approve i{position:absolute;inset:0;background:var(--neon);transform-origin:left;transform:scaleX(0)}
+.approve span{position:relative;color:var(--ink);mix-blend-mode:normal}
+.approve.filling span{color:#07100A}
+.thanks{margin-top:18px;display:none;flex-direction:column;align-items:center;gap:12px}
+.board.done .thanks{display:flex;animation:fs .8s ease}
+.board.done .approve{display:none}
+.thanks p{font-family:var(--f-display);font-size:20px}
+.thanks .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* overlays */
+.ovl{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) 16px 16px;background:rgba(2,3,2,.72);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s linear .35s}
+.ovl.on{opacity:1;visibility:visible;transition:opacity .35s,visibility 0s}
+.ovl .box{width:min(1120px,100%);max-height:100%;overflow-y:auto;border:1px solid var(--line-2);background:rgba(5,8,6,.96);border-radius:2px;padding:22px 24px;transform:translateY(10px);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.ovl.on .box{transform:none}
+.ovl .oh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.ovl .oh h2{font-size:28px}
+.ovl .oh .hb{margin-left:auto}
+.ovl .archive{padding:0}
+
+.cursor-hint{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:12;font:500 10.5px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);pointer-events:none;opacity:0;transition:opacity .6s;white-space:nowrap}
+.cursor-hint.on{opacity:1}
+
+/* responsive */
+@media (max-width:1100px){
+  .door-grid{grid-template-columns:minmax(0,1fr);justify-items:center;gap:18px}
+  .dialspace{width:min(96vw,760px);order:1}
+  .verdict{order:2;width:min(640px,100%);min-height:0}
+  .keys{order:3;width:min(640px,100%);grid-template-columns:repeat(2,minmax(0,1fr))}
+  .keys .kh{grid-column:1/-1}
+  .sheet,.sheet.left{left:12px;right:12px;width:auto}
+}
+@media (max-width:640px){
+  .hud{gap:10px}.hud .team{display:none}.hud .sep{display:none}
+  .pips{padding:7px 8px;gap:6px}.pips .pl,.pip b{display:none}.pip{font-size:0;gap:0}
+  .hb{padding:7px 7px;font-size:9px;letter-spacing:.08em}#bSound{display:none}.hbtns{gap:4px}.pips{margin-left:auto}
+  .dialspace{aspect-ratio:1/1}
+  .keys{grid-template-columns:minmax(0,1fr)}
+  .lk.E,.lk.W{width:26%}.lk .tg{display:none}
+  .lk .v{font-size:19px}
+  .dialc .c{font-size:28px}
+  .sh-body{padding:16px 14px 20px}
+  .sh-top .dots{display:none}
+  .foot{justify-content:center;text-align:center}.foot .credit{align-items:center}
+  .approve{min-width:0;width:100%}
+}
+@media (max-height:760px) and (min-width:1101px){.door-top .lede{display:none}.door-top h2{font-size:32px}}
+@media (prefers-reduced-motion:reduce){.rise,.lines p{transition:none}.ch .plates > *{opacity:1;transform:none}.ch.cur.play .plates > *{animation:none}#ticks{transition:none}}
+</style>
+
+<canvas id="vault" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="tip" id="tip" role="status"></div>
+
+<header class="hud" id="hud">
+  <img src="{{DELOITTE}}" alt="Deloitte" width="80" height="15">
+  <span class="sep"></span>
+  <span class="team"><span class="ringmark"></span>Team Green Dot</span>
+  <div class="pips" id="pips" aria-label="Board tests">
+    <span class="pl">Board tests</span>
+    <span class="pip" data-i="0" title="Growth 5-6% a year"><i></i>G <b>-</b></span>
+    <span class="pip" data-i="1" title="Better-for-you 12%+ of revenue"><i></i>B <b>-</b></span>
+    <span class="pip" data-i="2" title="Operating margin 11%+"><i></i>M <b>-</b></span>
+    <span class="pip" data-i="3" title="Net debt to EBITDA under 2.5x"><i></i>L <b>-</b></span>
+  </div>
+  <div class="hbtns">
+    <button class="hb" id="bBrief">Brief</button>
+    <button class="hb ghost" id="bPlan">Plan</button>
+    <button class="hb" id="bArch">Archive</button>
+    <button class="hb" id="bSound" aria-pressed="false" title="Sound">Sound</button>
+  </div>
+</header>
+
+<!-- ================= INTRO ================= -->
+<section class="scene intro" id="sIntro" aria-label="Entrance">
+  <div class="in">
+    <p class="eyebrow rise"><span class="rn">Deloitte Capstone 2026</span><span>Project Orchard</span><span>A recommendation to Elena Marsh and the Alderbrook board</span></p>
+    <div class="lines" aria-live="polite">
+      <p>Alderbrook grows <em>2.4%</em> a year. Its board wants <em>5-6%</em>.</p>
+      <p>The board has set four tests for FY29. Think of them as <em>four locks on one vault</em>.</p>
+      <p>We found the only key that opens all four. <em>Hold the green dot to enter.</em></p>
+    </div>
+    <button class="hold" id="hold" aria-label="Hold to enter the vault. Keyboard: hold Space or Enter.">
+      <svg viewBox="0 0 132 132" aria-hidden="true"><circle class="trk" cx="66" cy="66" r="63"/><circle class="bar2" id="holdBar" cx="66" cy="66" r="63" stroke-dasharray="396" stroke-dashoffset="396"/></svg>
+      <span class="core"></span>
+    </button>
+    <p class="holdlab rise d3">Hold to enter<small>About 8 minutes · mouse, touch or keyboard</small></p>
+    <div class="foot">
+      <div class="credit rise d4">
+        <div class="logos"><img src="{{DELOITTE_DARK}}" alt="Deloitte" width="96" height="18"><img src="{{XLRI}}" alt="XLRI Xavier School of Management" width="96" height="40"></div>
+        <p class="people"><b>Team Green Dot</b> · Chaitanya Sharma · Saloni Prashant Nazare · XLRI - Xavier School of Management</p>
+      </div>
+      <button class="skip rise d5" id="skipBrief">Short on time? Read the one-minute answer</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DOOR ================= -->
+<section class="scene door" id="sDoor" aria-label="The vault door">
+  <div class="in">
+    <div class="door-top rise">
+      <p class="eyebrow"><span class="rn">The vault door</span><span>Q2 · Which path</span></p>
+      <h2>Four locks. <em>Six keys.</em></h2>
+      <p class="lede">Each lock is one of the board's tests for FY29. Each key is a path Alderbrook could take. Try them. Only one opens every lock.</p>
+    </div>
+    <div class="door-grid">
+      <div class="keys rise d2" id="keys" role="group" aria-label="Keys"><div class="kh"><span>Keys</span><span id="tried">0 of 6 tried</span></div></div>
+      <div class="dialspace rise d1" id="dialspace">
+        <svg viewBox="-255 -170 510 340" aria-hidden="true"><g id="ticks"></g><g id="arcs"></g></svg>
+        <div class="lk N" data-i="0"><p class="n">Growth</p><p class="tg">5-6% a year</p><p class="v num">-</p><p class="st"></p></div>
+        <div class="lk E" data-i="1"><p class="n">Better-for-you</p><p class="tg">12%+ of revenue</p><p class="v num">-</p><p class="st"></p></div>
+        <div class="lk S" data-i="2"><p class="n">Margin</p><p class="tg">11%+ operating</p><p class="v num">-</p><p class="st"></p></div>
+        <div class="lk W" data-i="3"><p class="n">Leverage</p><p class="tg">under 2.5x</p><p class="v num">-</p><p class="st"></p></div>
+        <div class="dialc"><p class="k" id="dialK">Today, no deal</p><p class="c num" id="dialC">2<small> / 4 open</small></p></div>
+      </div>
+      <div class="verdict rise d3" id="verdict" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HUB ================= -->
+<section class="scene hub" id="sHub" aria-label="Plan of the vault">
+  <div class="in">
+    <p class="eyebrow rise"><span class="rn">Inside the vault</span><span>Seven chambers, one plan</span></p>
+    <h2 class="rise d1">The key works. <em>Here is how it is built.</em></h2>
+    <p class="lede rise d2">Each chamber answers a question from the case. Open them in any order, or follow the lit path. The board room is at the far end.</p>
+    <div class="plan rise d3">
+      <div class="ph"><span>Plan of the vault · not to scale</span><span id="planWhere">You are at the door</span></div>
+      <svg id="plan" viewBox="0 0 1000 300" role="group" aria-label="Chambers"></svg>
+    </div>
+    <div class="hubcta rise d4"><button class="btn go" id="startTour">Open chamber 01 →</button><button class="btn" id="toAsk">Go to the board room</button></div>
+    <p class="count rise d5" id="count"><b>0</b> of 7 chambers opened · ← → to move between chambers · Esc for this plan</p>
+  </div>
+</section>
+
+<!-- ================= CHAMBERS ================= -->
+<div class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="crumb">
+  <div class="sh-top"><p class="crumb" id="crumb"></p><div class="dots" id="dots"></div><div class="sp"><button class="hb" id="shPlan">Plan · Esc</button></div></div>
+  <div class="sh-body" id="shBody">
+{{CHAMBERS}}
+  </div>
+  <div class="sh-foot"><button class="btn" id="shPrev">←</button><button class="btn go" id="shNext">→</button></div>
+</div>
+
+<!-- ================= BOARD ROOM ================= -->
+<section class="scene board" id="sAsk" aria-label="The board room">
+  <div class="in" id="askIn">
+    <div class="ringed" id="ringed">
+      <p class="eyebrow"><span class="rn">The board room</span><span>The ask</span></p>
+      <h2>Approve<br>the offer<span class="dot" id="askDot"></span></h2>
+      <p class="lede">Two decisions, each taken against written walk-away terms.</p>
+    </div>
+    <div class="two">
+      <div class="plate"><p class="when">Today</p><p class="what">A non-binding offer for 60% of Brightwater at a $340-400M valuation.</p><p class="small">Plus a $3M diligence budget to answer the eight questions in chamber 07.</p></div>
+      <div class="plate"><p class="when">March 2027</p><p class="what">Final approval, only if all four gates hold.</p><p class="small">Retention signed. Exit costs under $40M. HSR cleared and health claims supported. Valuation at or below $400M.</p></div>
+    </div>
+    <div class="gets"><span><b>5.6%</b> growth a year</span><span><b>12.3%</b> better-for-you share</span><span><b>11.5%</b> operating margin</span><span><b>2.03x</b> peak leverage</span></div>
+    <button class="approve" id="approve" aria-label="Hold to approve the offer"><i id="apFill"></i><span>Hold to approve the offer</span></button>
+    <div class="thanks">
+      <p>Offer approved for diligence.</p>
+      <p class="people"><b>Team Green Dot</b> · Chaitanya Sharma · Saloni Prashant Nazare · XLRI - Xavier School of Management</p>
+      <div class="row"><button class="btn" id="askArch">Open the archive</button><button class="btn" id="askPlan">Back to the plan</button><button class="btn" id="again">Walk it again</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= OVERLAYS ================= -->
+<div class="ovl" id="oBrief" role="dialog" aria-modal="true" aria-labelledby="briefT">
+  <div class="box">
+    <div class="oh"><p class="eyebrow"><span class="rn">Brief</span><span>The answer in one minute</span></p><button class="hb" data-close>Close · Esc</button></div>
+    <h2 id="briefT" style="font-size:clamp(26px,3vw,38px);line-height:1.1;margin-bottom:18px">Take control of Brightwater now. <em style="color:var(--neon)">Pay for the rest when it is earned.</em></h2>
+{{BRIEF}}
+  </div>
+</div>
+<div class="ovl" id="oArch" role="dialog" aria-modal="true" aria-labelledby="archT">
+  <div class="box">
+    <div class="oh"><h2 id="archT">The archive</h2><p class="eyebrow"><span>Assumptions, numbers, sources and how we worked</span></p><button class="hb" data-close>Close · Esc</button></div>
+    <div class="archive">
+{{ARCHIVE}}
+    </div>
+    <footer class="end" style="padding:16px 0 0"><span>Project Orchard · Deloitte Capstone 2026</span><span>Team Green Dot · XLRI</span><span>All company figures for Alderbrook, Brightwater and Marrow Lane are fictional and come from the case.</span></footer>
+  </div>
+</div>
+<p class="cursor-hint" id="hint"></p>
+
+<script>{{MODEL_JS}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>{{APP_JS}}</script>

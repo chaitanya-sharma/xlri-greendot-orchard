@@ -1,0 +1,771 @@
+<title>The Graft Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Team Green Dot's recommendation for Project Orchard, Deloitte Capstone 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap">
+<style>
+/* Layout: a fixed WebGL vault corridor behind a single reading column; each room = threshold card + mounted plates. */
+:root{
+  --void:#030504; --plate:rgba(7,11,9,.88); --plate-hi:rgba(14,20,16,.94); --well:rgba(255,255,255,.035);
+  --line:rgba(160,210,100,.16); --line-2:rgba(160,210,100,.34); --screw:rgba(190,230,140,.38);
+  --ink:#E6EDE7; --mute:#A2AFA6; --faint:#6E7B72;
+  --green:#86BC25; --neon:#B7F05E; --deep:#2E7D18; --fruit:#F0A54A; --bad:#EE6A55; --warn:#E9B44C;
+  --f-display:"Newsreader","Iowan Old Style",Georgia,serif;
+  --f-body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --col:1180px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;background:var(--void)}
+body{margin:0;background:var(--void);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+#vault{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 45%,rgba(3,5,4,0) 40%,rgba(3,5,4,.55) 80%,rgba(3,5,4,.85) 100%)}
+.nogl #vault{display:none}
+.nogl .veil{background:radial-gradient(circle at 50% 30%,transparent 17vh,rgba(183,240,94,.85) 17.4vh,rgba(183,240,94,.15) 18.5vh,transparent 24vh),
+  repeating-linear-gradient(90deg,transparent 0 11vw,rgba(134,188,37,.08) 11vw 11.2vw),var(--void)}
+main,.bar,.rail{position:relative;z-index:2}
+a{color:var(--neon)}
+:focus-visible{outline:2px solid var(--neon);outline-offset:3px;border-radius:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+p{margin:0}
+.mono{font-family:var(--f-mono)}
+b,strong{font-weight:600;color:#fff}
+.hl{color:var(--neon)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- top bar ---------- */
+.bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:18px;
+  padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(rgba(3,5,4,.96) 55%,rgba(3,5,4,0))}
+.bar img{height:15px;display:block}
+.bar .sep{width:1px;height:16px;background:var(--line-2)}
+.team{display:flex;align-items:center;gap:8px;font:600 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.ringmark{width:13px;height:13px;border-radius:50%;border:2px solid var(--neon);box-shadow:0 0 8px var(--green)}
+.where{margin-left:auto;font:500 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.where b{color:var(--neon);font-weight:600}
+.prog{position:fixed;top:0;left:0;height:2px;width:0;background:var(--neon);box-shadow:0 0 10px var(--green);z-index:21}
+.menu-btn{display:none;background:none;border:1px solid var(--line-2);color:var(--ink);font:600 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:8px 10px;border-radius:2px;cursor:pointer}
+
+/* ---------- right rail = wall lights ---------- */
+.rail{position:fixed;right:max(18px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:6px}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;padding:3px 0}
+.rail a span{font:500 10.5px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);opacity:0;transform:translateX(6px);transition:.2s}
+.rail a i{width:3px;height:18px;border-radius:2px;background:rgba(160,210,100,.22);transition:.25s}
+.rail a:hover span,.rail a:focus-visible span,.rail a.on span{opacity:1;transform:none}
+.rail a.on span{color:var(--neon)}
+.rail a.on i{background:var(--neon);box-shadow:0 0 10px var(--green),0 0 22px var(--green);height:26px}
+.rail a.done i{background:rgba(160,210,100,.55)}
+
+/* ---------- hero ---------- */
+.hero{min-height:100vh;max-width:var(--col);margin:0 auto;display:flex;flex-direction:column;justify-content:flex-end;padding-block:120px 7vh}
+.eyebrow{font:500 11.5px/1.4 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--neon);display:flex;flex-wrap:wrap;gap:6px 14px}
+.eyebrow .rn{color:var(--ink)}
+.hero h1{font-size:clamp(54px,9.4vw,132px);line-height:.92;letter-spacing:-.02em;margin-top:14px}
+.hero h1 .dot{display:inline-block;width:.16em;height:.16em;border-radius:50%;background:var(--neon);box-shadow:0 0 18px var(--green);margin-left:.04em}
+.hero .lede{font-family:var(--f-display);font-style:italic;font-weight:300;font-size:clamp(19px,2.2vw,27px);line-height:1.3;color:#D3DDD5;max-width:30em;margin-top:18px}
+.hero-row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;margin-top:30px;align-items:end}
+.answer{border:1px solid var(--line-2);background:var(--plate);backdrop-filter:blur(8px);padding:18px 20px;border-radius:2px}
+.answer .lab{font:600 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.answer p{font-size:17px;line-height:1.45}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.btn{font:600 12px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:13px 16px;border-radius:2px;border:1px solid var(--line-2);color:var(--ink);background:rgba(3,5,4,.6);text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn.go{background:var(--neon);color:#07100A;border-color:var(--neon);box-shadow:0 0 24px rgba(134,188,37,.45)}
+.btn:hover{border-color:var(--neon)}
+.credit{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.logos{display:flex;align-items:center;gap:16px;background:#fff;padding:9px 14px;border-radius:2px}
+.logos img{display:block}
+.people{font-size:14px;color:var(--mute)}
+.people b{color:var(--ink)}
+.hint{font:500 11px/1.5 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:18px}
+
+/* ---------- rooms ---------- */
+.room{max-width:var(--col);margin:0 auto;padding-bottom:8vh}
+.threshold{padding-block:34vh 8vh;max-width:900px}
+.threshold h2,.threshold .lede,.threshold .eyebrow,.hero h1,.hero .lede,.finale h2,.finale .lede{text-shadow:0 2px 24px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}
+.threshold h2{font-size:clamp(32px,4.4vw,58px);line-height:1.04;letter-spacing:-.012em;margin-top:14px}
+.threshold h2 em{font-style:italic;color:var(--neon)}
+.threshold .lede{font-size:18px;color:#CBD6CE;max-width:40em;margin-top:16px}
+.plates{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s7{grid-column:span 7}.s6{grid-column:span 6}.s5{grid-column:span 5}.s4{grid-column:span 4}
+.plate{position:relative;min-width:0;padding:20px 22px 22px;border:1px solid var(--line);border-radius:2px;backdrop-filter:blur(10px);
+  background:
+   radial-gradient(circle at 9px 9px,var(--screw) 1.3px,transparent 1.9px),
+   radial-gradient(circle at calc(100% - 9px) 9px,var(--screw) 1.3px,transparent 1.9px),
+   radial-gradient(circle at 9px calc(100% - 9px),var(--screw) 1.3px,transparent 1.9px),
+   radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),var(--screw) 1.3px,transparent 1.9px),
+   var(--plate)}
+.plate-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.plate-h .tag{font:600 10.5px/1 var(--f-mono);color:#07100A;background:var(--green);padding:4px 6px 3px;border-radius:1px;letter-spacing:.06em}
+.plate-h h3{font:600 11.5px/1.35 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.plate-h .aside{margin-left:auto;font:500 10.5px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);text-align:right}
+.small{font-size:13.2px;line-height:1.5;color:var(--mute)}
+.note{font-family:var(--f-display);font-style:italic;font-size:15px;color:#C9D4CC}
+.sowhat{display:flex;gap:16px;align-items:center;margin-top:16px;padding:16px 20px;border:1px solid var(--line-2);background:rgba(10,16,11,.92);border-radius:2px}
+.sowhat .k{flex:none;font:600 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#07100A;background:var(--neon);padding:6px 8px 5px;border-radius:1px}
+.sowhat p{font-size:17px;line-height:1.4}
+.src{margin-top:12px;font:400 11px/1.6 var(--f-mono);color:var(--faint);letter-spacing:.02em;max-width:110ch;width:fit-content;background:rgba(3,5,4,.78);padding:8px 12px;border-radius:2px}
+ul.ticks{list-style:none;padding:0;margin:0;display:grid;gap:9px}
+ul.ticks li{position:relative;padding-left:16px}
+ul.ticks li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--green);border-radius:1px}
+.big{font-family:var(--f-display);font-weight:400;font-size:44px;line-height:1;letter-spacing:-.01em}
+.big.bad{color:var(--bad)}.big.good{color:var(--neon)}
+.kicker{font:600 10.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+
+/* answer room */
+.moves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.move{padding:4px 22px 6px;border-left:1px solid var(--line)}
+.move:first-child{border-left:none;padding-left:0}
+.move svg{width:40px;height:40px;display:block;margin-bottom:12px}
+.move h4{margin:0 0 4px;font:600 10.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.move .t{font-family:var(--f-display);font-size:22px;line-height:1.15;margin-bottom:10px}
+.tests{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.test{padding:14px;border:1px solid var(--line);background:var(--well);border-radius:2px}
+.test .v{font-family:var(--f-display);font-size:34px;line-height:1}
+.test .l{font-size:13px;color:var(--mute);margin-top:6px;min-height:2.6em}
+.test .ok{font:600 10.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--neon);margin-top:8px}
+.vs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ask{display:flex;gap:18px;align-items:center;padding:18px 22px;background:var(--neon);color:#07100A;border-radius:2px}
+.ask .k{font:700 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;flex:none}
+.ask p{font-size:16.5px;line-height:1.4;color:#07100A}
+.ask b{color:#07100A}
+.notnow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.notnow div{border-top:1px solid var(--line-2);padding-top:10px}
+.notnow h5{margin:0 0 4px;font:600 13px/1.3 var(--f-body);color:var(--ink)}
+
+/* charts */
+svg text{font-family:var(--f-mono)}
+.chart{width:100%;height:auto;display:block}
+.toggle{display:inline-flex;border:1px solid var(--line-2);border-radius:2px;overflow:hidden}
+.toggle button{font:600 10.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;background:none;border:none;color:var(--mute);padding:9px 12px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--neon);color:#07100A}
+.signals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sig{padding:12px 14px;border:1px solid var(--line);background:var(--well);border-radius:2px}
+.sig .v{font-family:var(--f-display);font-size:28px;line-height:1.05;color:var(--neon)}
+.sig p{font-size:13.2px;line-height:1.45;margin-top:5px}
+.sig .s{font:500 10px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:8px}
+.causes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.causes h5{margin:8px 0 3px;font:600 14px/1.25 var(--f-body)}
+.causes svg{width:30px;height:30px}
+.tip{position:fixed;z-index:50;pointer-events:none;background:#0B120D;border:1px solid var(--line-2);padding:8px 10px;border-radius:2px;font:500 12px/1.4 var(--f-mono);color:var(--ink);opacity:0;transition:opacity .12s;max-width:240px}
+
+/* options */
+.weights{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.weights label{display:block;font:600 10.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.weights output{color:var(--neon)}
+input[type=range]{width:100%;accent-color:var(--green);margin-top:8px}
+.rank{position:relative}
+.opt{position:absolute;left:0;right:0;height:62px;display:grid;grid-template-columns:30px minmax(0,1.25fr) minmax(0,1.35fr) 48px minmax(0,.8fr);gap:14px;align-items:center;
+  border-top:1px solid var(--line);transition:top .55s cubic-bezier(.2,.8,.2,1);padding-right:4px}
+.opt .r{font-family:var(--f-display);font-size:24px;color:var(--faint)}
+.opt.first .r{color:var(--neon)}
+.opt .n b{display:block;font-size:15px}
+.opt .n span{font-size:12.5px;color:var(--mute)}
+.opt .bar{height:10px;background:rgba(255,255,255,.06);border-radius:1px;position:relative;overflow:hidden}
+.opt .bar i{position:absolute;inset:0 auto 0 0;background:var(--faint);transition:width .55s}
+.opt.first .bar i{background:var(--neon);box-shadow:0 0 12px var(--green)}
+.opt .sc{font-family:var(--f-display);font-size:22px;text-align:right}
+.opt .vd{font:600 10.5px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.opt.first .vd{color:var(--neon)}
+.whynot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.whynot div{padding:12px 14px;border:1px solid var(--line);background:var(--well);border-radius:2px}
+.whynot h5{margin:0 0 6px;font:600 13.5px/1.3 var(--f-body)}
+
+/* value + deal */
+.ret{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ret p{font-size:13.2px;color:var(--mute);margin-top:6px}
+.tranches{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);gap:0;align-items:stretch}
+.tr{padding:16px 18px;border-radius:2px}
+.tr.a{background:#0D150F;border:1px solid var(--line-2)}
+.tr.b{background:rgba(134,188,37,.08);border:1px dashed var(--line-2)}
+.tr .t{font-family:var(--f-display);font-size:30px;line-height:1.05;margin:6px 0 8px}
+.arrow{display:grid;place-items:center;color:var(--neon);font-size:20px}
+.sim{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px}
+.ctrl{display:grid;gap:16px}
+.ctrl .lab{display:flex;justify-content:space-between;font:600 10.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.ctrl .lab output{color:var(--neon);font-size:12px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line-2);border-radius:2px;overflow:hidden;margin-top:8px}
+.seg.two{grid-template-columns:repeat(2,1fr)}
+.seg button{background:none;border:none;border-left:1px solid var(--line);color:var(--mute);font:600 11px/1.2 var(--f-mono);letter-spacing:.06em;padding:10px 6px;cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button[aria-pressed="true"]{background:var(--neon);color:#07100A}
+.readout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ro{padding:12px;border:1px solid var(--line);background:var(--well);border-radius:2px}
+.ro .v{font-family:var(--f-display);font-size:30px;line-height:1;transition:color .2s}
+.ro .l{font:500 10px/1.35 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+.checks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+.ck{padding:10px 12px;border-radius:2px;border:1px solid var(--line);font-size:12.5px;line-height:1.35;color:var(--mute)}
+.ck b{display:block;font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--ink)}
+.ck.pass{border-color:rgba(183,240,94,.55);box-shadow:inset 0 0 0 1px rgba(183,240,94,.1)}
+.ck.pass b::after{content:" ✓";color:var(--neon);font-size:16px}
+.ck.fail{border-color:rgba(238,106,85,.6)}
+.ck.fail b{color:var(--bad)}
+.ck.fail b::after{content:" ✗";font-size:16px}
+.su{width:100%;border-collapse:collapse;font-size:14px}
+.su td{padding:7px 0;border-bottom:1px solid var(--line)}
+.su td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.su tr.h td{font:600 10px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding-top:14px;border-bottom:none}
+.su tr.t td{border-bottom:1px solid var(--line-2);font-weight:700;color:#fff}
+.facts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.facts div{padding:2px 16px;border-left:1px solid var(--line)}
+.facts div:first-child{border-left:none;padding-left:0}
+.facts h5{margin:0 0 6px;font:600 10.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.facts p{font-size:13.4px;line-height:1.5}
+
+/* execution */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.split > div{padding:16px 18px}
+.split .front{background:rgba(240,165,74,.06)}
+.split .back{background:rgba(134,188,37,.06);border-left:1px solid var(--line)}
+.split h4{margin:0 0 10px;font:600 10.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.split .front h4{color:var(--fruit)}.split .back h4{color:var(--green)}
+.graftline{height:10px;margin:12px 0;background:repeating-linear-gradient(115deg,var(--green) 0 10px,transparent 10px 16px);opacity:.8}
+.waves{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:18px;align-items:center}
+.wave-steps{display:grid;gap:8px}
+.wave-steps button{display:grid;grid-template-columns:14px minmax(0,1fr);gap:10px;align-items:start;text-align:left;background:var(--well);border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:2px;cursor:pointer;font:inherit}
+.wave-steps button i{width:12px;height:12px;border-radius:50%;margin-top:3px}
+.wave-steps button[aria-pressed="true"]{border-color:var(--neon);background:rgba(183,240,94,.08)}
+.wave-steps b{display:block;font-size:14px}
+.wave-steps span{font-size:12.5px;color:var(--mute)}
+.gate{margin-top:10px;padding:12px 14px;border-radius:2px;font-size:13.5px;line-height:1.45;border:1px solid var(--line-2);background:#0C130E}
+.gate.miss{border-color:rgba(233,180,76,.6);background:rgba(233,180,76,.07)}
+.switch{display:flex;align-items:center;gap:10px;margin-top:12px;font:600 10.5px/1.2 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);cursor:pointer}
+.switch input{accent-color:var(--warn);width:16px;height:16px}
+.lanes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.lane{display:grid;grid-template-columns:78px minmax(0,1fr);gap:12px;align-items:center}
+.lane img{width:78px;height:auto;display:block;filter:drop-shadow(0 10px 18px rgba(0,0,0,.6))}
+.lane .p{font-family:var(--f-display);font-size:30px;line-height:1}
+.steps2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.steps2 .n{font-family:var(--f-display);font-size:40px;line-height:1;color:var(--green)}
+.lessons{display:grid;gap:10px}
+.lessons div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding-top:10px;border-top:1px solid var(--line)}
+.lessons b{font-size:13.5px}
+.lessons span{font-size:12.8px;color:var(--mute);display:block}
+.lessons em{font-style:normal;color:var(--neon);font-size:13.2px;font-weight:600}
+
+/* data */
+.engine{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr) minmax(0,1fr);gap:46px;align-items:center}
+.engine svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.inputs,.outputs{display:grid;gap:10px;position:relative;z-index:1}
+.inp{padding:10px 12px;border:1px solid var(--line);background:#0A100C;border-radius:2px;transition:.25s}
+.inp b{display:block;font-size:13.8px}.inp span{font-size:12.3px;color:var(--mute)}
+.inp.lit{border-color:var(--neon);box-shadow:0 0 18px rgba(134,188,37,.25)}
+.core{position:relative;z-index:1;padding:20px;background:#0B110D;border:1px solid var(--line-2);border-radius:50%;aspect-ratio:1;max-width:100%;display:grid;place-items:center;text-align:center;
+  box-shadow:0 0 0 6px rgba(134,188,37,.05),0 0 60px rgba(134,188,37,.18)}
+.core .t{font-family:var(--f-display);font-size:24px;line-height:1.1}
+.core p{font-size:12.5px;color:var(--mute);margin-top:8px;max-width:22ch}
+.outputs button{display:flex;gap:10px;align-items:center;text-align:left;padding:10px 12px;border:1px solid var(--line);background:#0A100C;color:var(--ink);border-radius:2px;cursor:pointer;font:inherit}
+.outputs button i{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:600 11px/1 var(--f-mono);font-style:normal;background:rgba(134,188,37,.15);color:var(--neon)}
+.outputs button[aria-pressed="true"]{border-color:var(--neon);background:rgba(183,240,94,.08)}
+.outputs button[aria-pressed="true"] i{background:var(--neon);color:#07100A}
+.outputs b{font-size:14px;display:block}.outputs span{font-size:12px;color:var(--mute)}
+.ucdetail{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.ucdetail .t{font-family:var(--f-display);font-size:24px;line-height:1.15}
+
+/* roadmap */
+.locks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.lock{padding:14px;border:1px solid var(--line);background:var(--well);border-radius:2px;position:relative}
+.lock .n{position:absolute;top:12px;right:12px;font-family:var(--f-display);font-size:26px;line-height:1;color:var(--faint)}
+.lock svg{width:22px;height:22px;display:block;margin-bottom:8px}
+.lock b{display:block;font-size:14px;margin-bottom:4px;padding-right:26px}
+.lock p{font-size:12.8px;color:var(--mute)}
+.gantt-wrap{overflow-x:auto}
+.gantt{min-width:760px;display:grid;grid-template-columns:110px repeat(8,minmax(0,1fr));font-size:12px}
+.gantt .hd{font:600 10px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:center;padding-bottom:8px;border-bottom:1px solid var(--line-2)}
+.gantt .rl{font:600 12.5px/1 var(--f-body);display:flex;align-items:center;height:44px;border-bottom:1px solid var(--line)}
+.gantt .row{grid-column:2/-1;position:relative;height:44px;border-bottom:1px solid var(--line);
+  background:repeating-linear-gradient(90deg,transparent 0 calc(12.5% - 1px),rgba(160,210,100,.08) calc(12.5% - 1px) 12.5%)}
+.gantt .bx{position:absolute;top:10px;height:24px;border-radius:2px;font:600 11px/24px var(--f-body);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gantt .bx.d{background:var(--neon);color:#07100A}.gantt .bx.m{background:var(--deep);color:#fff}.gantt .bx.l{background:rgba(183,240,94,.18);color:var(--ink);border:1px solid var(--line-2)}
+.gantt .bx.r{background:var(--bad);color:#fff}
+.gantt .ms{position:absolute;top:13px;width:16px;height:16px;transform:translateX(-50%) rotate(45deg);background:var(--neon);box-shadow:0 0 10px var(--green)}
+.gantt .msl{position:absolute;top:30px;transform:translateX(-50%);font:600 9.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--neon);white-space:nowrap}
+.risks{width:100%;border-collapse:collapse;font-size:13.4px}
+.risks td,.risks th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.risks th{font:600 10px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.chip{display:inline-block;min-width:22px;text-align:center;font:700 10.5px/1 var(--f-mono);padding:4px 5px;border-radius:2px}
+.chip.H{background:rgba(238,106,85,.22);color:#FFB3A6}.chip.M{background:rgba(233,180,76,.2);color:#F6D48C}
+.walk{padding:16px 18px;border:1px solid rgba(238,106,85,.45);background:rgba(238,106,85,.06);border-radius:2px}
+.walk h4{margin:0 0 10px;font:600 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#FFB3A6}
+.decide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.decide h5{margin:0 0 4px;font:600 13.5px/1.3 var(--f-body);color:var(--neon)}
+
+/* finale */
+.finale{min-height:110vh;max-width:var(--col);margin:0 auto;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-block:14vh 18vh}
+.finale .ringed{width:min(560px,86vw,64vh);aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;margin-bottom:18px}
+.finale h2{font-size:clamp(44px,min(6.4vw,10vh),92px);line-height:.98;letter-spacing:-.02em}
+.finale h2 .dot{display:inline-block;width:.15em;height:.15em;border-radius:50%;background:var(--neon);box-shadow:0 0 20px var(--green);margin-left:.03em}
+.finale .lede{font-family:var(--f-display);font-style:italic;font-size:clamp(16px,2.2vh,20px);color:#D6E0D8;margin-top:14px;max-width:24ch}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:34px;text-align:left;width:100%;max-width:980px}
+.two .plate .when{font:600 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--neon)}
+.two .plate .what{font-family:var(--f-display);font-size:24px;line-height:1.2;margin:10px 0 8px}
+.gets{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;margin-top:26px;font:600 12px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.gets b{color:var(--neon);font-size:15px}
+.sign{margin-top:34px;font-size:14px;color:var(--mute)}
+.sign b{color:var(--ink)}
+
+/* archive */
+.archive{max-width:var(--col);margin:0 auto;padding-block:6vh 14vh}
+details{border:1px solid var(--line);background:var(--plate-hi);border-radius:2px;margin-top:10px}
+summary{cursor:pointer;list-style:none;padding:16px 20px;display:flex;align-items:center;gap:12px;font:600 12px/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;font:400 20px/1 var(--f-display);color:var(--neon)}
+details[open] summary::after{content:"−"}
+.dbody{padding:0 20px 20px}
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13.2px;min-width:560px}
+.tbl th,.tbl td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl th{font:600 10px/1.2 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.tbl td.pos{color:var(--neon)}.tbl td.neg{color:var(--bad)}
+footer.end{max-width:var(--col);margin:0 auto;padding-block:20px 60px;font:500 11px/1.6 var(--f-mono);color:var(--faint);letter-spacing:.04em;display:flex;flex-wrap:wrap;gap:8px 24px}
+
+/* responsive */
+@media (max-width:1100px){.rail{display:none}}
+@media (max-width:980px){
+  .s8,.s7,.s6,.s5,.s4{grid-column:span 12}
+  .hero-row,.sim,.waves,.engine,.ucdetail{grid-template-columns:minmax(0,1fr)}
+  .engine{gap:16px}.engine svg.wires{display:none}.core{border-radius:2px;aspect-ratio:auto}
+  .tests,.causes,.locks,.notnow,.whynot,.checks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts{grid-template-columns:minmax(0,1fr)}.facts div{border-left:none;padding:12px 0 0;border-top:1px solid var(--line)}
+  .weights{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  body{font-size:15px}
+  .moves,.vs,.signals,.ret,.readout,.lanes,.steps2,.split,.two,.decide{grid-template-columns:minmax(0,1fr)}
+  .move{border-left:none;border-top:1px solid var(--line);padding:14px 0}.move:first-child{border-top:none}
+  .split .back{border-left:none;border-top:1px solid var(--line)}
+  .tests,.causes,.locks,.notnow,.whynot,.checks{grid-template-columns:minmax(0,1fr)}
+  .tranches{grid-template-columns:minmax(0,1fr)}.arrow{transform:rotate(90deg);height:30px}
+  .opt{grid-template-columns:26px minmax(0,1fr) 46px;height:62px}.opt .bar,.opt .vd{display:none}
+  .where{display:none}.menu-btn{display:inline-block;margin-left:auto}
+  .threshold{padding-block:24vh 6vh}
+  .sowhat{flex-direction:column;align-items:flex-start}
+  .ask{flex-direction:column;align-items:flex-start}
+}
+.menu{position:fixed;inset:0;z-index:30;background:rgba(3,5,4,.96);display:flex;flex-direction:column;padding:calc(70px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) 24px max(24px,env(safe-area-inset-left,0px));gap:4px}
+.menu a{font-family:var(--f-display);font-size:26px;color:var(--ink);text-decoration:none;padding:6px 0;border-bottom:1px solid var(--line)}
+.menu a small{font:500 11px/1 var(--f-mono);color:var(--neon);letter-spacing:.1em;margin-right:10px}
+</style>
+
+<canvas id="vault" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="prog" id="prog"></div>
+
+<header class="bar">
+  <img src="{{DELOITTE}}" alt="Deloitte" width="80" height="15">
+  <span class="sep"></span>
+  <span class="team"><span class="ringmark"></span>Team Green Dot</span>
+  <span class="where" id="where">Project Orchard</span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Rooms</button>
+</header>
+<div class="menu" id="menu" hidden></div>
+<nav class="rail" id="rail" aria-label="Rooms"></nav>
+<div class="tip" id="tip" role="status"></div>
+
+<main>
+<!-- ================= ENTRY ================= -->
+<section class="hero" id="top" data-room="0" data-name="Entrance" data-short="Entrance">
+  <p class="eyebrow"><span class="rn">Deloitte Capstone 2026</span><span>Project Orchard</span><span>Recommendation to Elena Marsh and the Alderbrook board</span></p>
+  <h1>The Graft Plan<span class="dot"></span></h1>
+  <p class="lede">Alderbrook can buy the speed it cannot build, plant it in the network it already owns, and stay inside its 2.5x leverage limit.</p>
+  <div class="hero-row">
+    <div class="answer">
+      <p class="lab">The answer, in one line</p>
+      <p>Buy <b>60% of Brightwater Botanicals now</b> at a $370M valuation. Let it <b>earn the last 40%</b> at a capped price. Grow it through Alderbrook's <b>plants, trucks and outlet data</b>.</p>
+      <div class="ctas">
+        <a class="btn go" href="#answer">Enter the vault ↓</a>
+        <a class="btn" href="#ask">Skip to the board ask</a>
+      </div>
+    </div>
+    <div class="credit">
+      <div class="logos"><img src="{{DELOITTE_DARK}}" alt="Deloitte" width="96" height="18"><img src="{{XLRI}}" alt="XLRI Xavier School of Management" width="96" height="40"></div>
+      <p class="people"><b>Team Green Dot</b> · Chaitanya Sharma · Saloni Prashant Nazare<br>XLRI - Xavier School of Management</p>
+    </div>
+  </div>
+  <p class="hint">8 rooms · about 9 minutes · scroll to walk, or use the ↓ ↑ keys</p>
+</section>
+
+<!-- ================= ROOM 1: ANSWER ================= -->
+<section class="room" id="answer" data-room="1" data-name="Room 01 · The answer" data-short="Answer">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 01</span><span>The answer on one wall</span></p>
+    <h2>Take control of Brightwater now. <em>Pay for the rest when it is earned.</em></h2>
+    <p class="lede">Three moves close a $209-294M growth gap and meet every board target, while net debt stays near 2x EBITDA.</p>
+  </div>
+  <div class="plates">
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">Q2</span><h3>Our recommendation: three moves</h3></div>
+      <div class="moves">
+        <div class="move">{{ICON_graft}}<h4>Move 1 · Graft</h4><p class="t">Buy 60% now, earn the rest</p>
+          <p class="small">60% at a <b>$370M valuation ($222M)</b>. A call option on the last 40% in FY29 at 2.5x FY28 revenue, <b>capped at $190M</b>. The private-equity investor exits for cash. The founder keeps 40% and runs the brand.</p></div>
+        <div class="move">{{ICON_plant}}<h4>Move 2 · Rootstock</h4><p class="t">Plug it into what Alderbrook owns</p>
+          <p class="small">Core flavours move to our <b>two can lines</b>, removing an 18% co-packing premium. Grocery and c-store volume moves onto <b>our DSD trucks in three gated waves</b>. Vital becomes a value tier at about $1.25 a can.</p></div>
+        <div class="move">{{ICON_engine}}<h4>Move 3 · Orchard Engine</h4><p class="t">Turn route data into decisions</p>
+          <p class="small">A 13-person data team built on Brightwater's 5 specialists and <b>weekly data from 110,000 outlets</b>. Cleaner promotions first, then where to sell and what to make.</p></div>
+      </div>
+    </article>
+    <article class="plate s8">
+      <div class="plate-h"><span class="tag">Q3</span><h3>The board's four tests, FY29 base case</h3></div>
+      <div class="tests">
+        <div class="test"><div class="v num">5.6%</div><div class="l">revenue growth a year (target 5-6%)</div><div class="ok">✓ Met</div></div>
+        <div class="test"><div class="v num">12.3%</div><div class="l">revenue from better-for-you drinks (target 12%+)</div><div class="ok">✓ Met</div></div>
+        <div class="test"><div class="v num">11.5%</div><div class="l">operating margin, 11.3% after deal amortisation (target 11%+)</div><div class="ok">✓ Met</div></div>
+        <div class="test"><div class="v num">2.03x</div><div class="l">peak net debt to EBITDA (limit 2.5x)</div><div class="ok">✓ Met</div></div>
+      </div>
+    </article>
+    <article class="plate s4">
+      <div class="plate-h"><span class="tag">Q3</span><h3>Versus paying $450M cash</h3></div>
+      <div class="vs" style="grid-template-columns:1fr 1fr">
+        <div><p class="kicker">Graft Plan</p><p class="big good num">+$68M</p><p class="small">deal NPV, 15% IRR</p></div>
+        <div><p class="kicker" style="color:var(--bad)">All cash</p><p class="big bad num">−$7M</p><p class="small">deal NPV, 2.85x leverage</p></div>
+      </div>
+      <p class="small" style="margin-top:14px">Cash at risk on Day 1: <b>$234M</b> against <b>$462M</b>.</p>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">Q2</span><h3>What we are not recommending, and why</h3></div>
+      <div class="notnow">
+        <div><h5>Brightwater at $450M, all cash</h5><p class="small">Right target, wrong structure. Leverage hits 2.85x and the seller keeps the synergy value Alderbrook creates.</p></div>
+        <div><h5>A distribution-only partnership</h5><p class="small">We would build a brand we do not control and could lose to a competitor.</p></div>
+        <div><h5>Marrow Lane</h5><p class="small">Adds about $80M by FY29 and takes growth to 3.4%. Both founders leave. Revisit after FY28.</p></div>
+        <div><h5>Relaunching Vital alone</h5><p class="small">24-36 months to scale with no new capability. Vital gets a job as the value tier instead.</p></div>
+      </div>
+    </article>
+  </div>
+  <div class="ask" style="margin-top:16px"><span class="k">Board ask today</span><p>Approve a <b>non-binding offer for 60% at a $340-400M valuation</b> and a $3M diligence budget. Final approval comes in March 2027, against four written gates.</p></div>
+  <p class="src">Sources: Deloitte Capstone case pack (FY25 data); Team Green Dot deal model v2 (assumptions in the archive at the end).</p>
+</section>
+
+<!-- ================= ROOM 2: GAP ================= -->
+<section class="room" id="gap" data-room="2" data-name="Room 02 · The gap" data-short="Gap">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 02</span><span>Q1 · What limits growth</span></p>
+    <h2>Alderbrook's mix caps growth at 2.4% a year, while demand moves to <em>low-sugar functional drinks at two price points</em>.</h2>
+  </div>
+  <div class="plates">
+    <article class="plate s7">
+      <div class="plate-h"><span class="tag">A</span><h3>FY29 revenue if nothing changes ($M)</h3>
+        <div class="aside"><div class="toggle" role="group" aria-label="Waterfall view"><button id="wfBase" aria-pressed="true">Status quo</button><button id="wfPlan" aria-pressed="false">With the plan</button></div></div></div>
+      <svg id="waterfall" class="chart" viewBox="0 0 660 312" role="img" aria-label="Revenue waterfall from FY25 to FY29"></svg>
+      <p class="small" style="margin-top:6px">Each segment keeps its FY25 growth rate. Axis starts at $1,600M. The gap is about $50-75M of new revenue every year.</p>
+    </article>
+    <article class="plate s5">
+      <div class="plate-h"><span class="tag">B</span><h3>What holds growth back</h3><span class="aside">Inside Alderbrook</span></div>
+      <div class="causes" style="grid-template-columns:1fr 1fr">
+        <div>{{ICON_chart}}<h5>The mix</h5><p class="small">62% of revenue is juice (falling 3% a year) or iced tea (flat).</p></div>
+        <div>{{ICON_clock}}<h5>The speed</h5><p class="small">Ideas come from annual panels. 14 months to shelf. Vital sells 60% on promotion.</p></div>
+        <div>{{ICON_plant}}<h5>Idle assets</h5><p class="small">Plants at 68%. Outlet data is used only to plan routes.</p></div>
+        <div>{{ICON_alert}}<h5>The deal record</h5><p class="small">The 2016 and 2019 buys both sell less today than when bought.</p></div>
+      </div>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">C</span><h3>How shoppers and retailers are moving</h3><span class="aside">Outside Alderbrook</span></div>
+      <div class="signals">
+        <div class="sig"><div class="v">$16B</div><p>US better-for-you drinks, growing 12-15% a year to 2030.</p><div class="s">Case pack</div></div>
+        <div class="sig"><div class="v">+83%</div><p>US modern soda sales in 2024, to $1.8B. Poppi holds 38%, Olipop 33%.</p><div class="s">Circana via Beverage Industry</div></div>
+        <div class="sig"><div class="v">12%</div><p>of US adults take a GLP-1 drug today; 18% ever have. Users cut sugary drinks.</p><div class="s">KFF poll, Nov 2025</div></div>
+        <div class="sig"><div class="v">47%</div><p>of consumers are value seekers. Only 1 in 3 brands is seen as more value for the price.</p><div class="s">Deloitte CP Outlook 2026</div></div>
+        <div class="sig"><div class="v">22% / 5%</div><p>have tried a prebiotic soda / drink one regularly. Getting people to try it is the bottleneck.</p><div class="s">Zappi, 2025</div></div>
+        <div class="sig"><div class="v">H1 2026</div><p>Poppi's sales fell while it switched to PepsiCo trucks. Olipop slowed.</p><div class="s">Beverage Digest, Aug 2026</div></div>
+      </div>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">D</span><h3>Our shelf check: price per 12 oz can on Walmart.com</h3><span class="aside">Primary research · 28 Oct 2026</span></div>
+      <svg id="shelf" class="chart" viewBox="0 0 1100 330" role="img" aria-label="Price per can by brand"></svg>
+      <p class="small" style="margin-top:8px">Six searches, 50+ listings, ship-to ZIP 12410. Lowest pack price shown; a hollow dot is the list price before a rollback. Hover a dot for the pack.</p>
+    </article>
+  </div>
+  <div class="sowhat"><span class="k">So what</span><p>Pepsi now sells a prebiotic cola for <b>$0.87 a can</b>, half the price of Poppi. Alderbrook needs a credible premium brand <b>and</b> a value lane, plus the speed and in-store execution to hold both.</p></div>
+  <p class="src">Sources: Case pack; Circana, Modern Soda's Moment, via Beverage Industry (2025); KFF Health Tracking Poll (14 Nov 2025); Deloitte 2026 Global Consumer Products Outlook; Zappi prebiotic soda survey (2025); Beverage Digest (5 Aug 2026); Team Green Dot shelf check, Walmart.com (28 Oct 2026).</p>
+</section>
+
+<!-- ================= ROOM 3: CHOICE ================= -->
+<section class="room" id="choice" data-room="3" data-name="Room 03 · Which path" data-short="Path">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 03</span><span>Q2 · Which path</span></p>
+    <h2>Brightwater is the right target. <em>Only a staged deal</em> meets every board target.</h2>
+    <p class="lede">We scored seven paths on five criteria. Move the weights to your own view of what matters; the ranking updates live.</p>
+  </div>
+  <div class="plates">
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">A</span><h3>Seven paths, scored 1 to 5</h3><span class="aside">Weights are yours to change</span></div>
+      <div class="weights" id="weights"></div>
+      <div class="rank" id="rank" aria-live="polite"></div>
+      <p class="note" style="margin-top:12px" id="rankNote">The Graft Plan stays first under any weighting, because it scores at least as well as every alternative on every criterion. Its weakest score is ease of execution (3 of 5), which is why Room 06 is about execution.</p>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">B</span><h3>Why not the obvious alternatives</h3></div>
+      <div class="whynot">
+        <div><h5>$450M all cash</h5><p class="small">4.7x trailing revenue for a loss-making brand. Peers sold at about 3-4x. Net debt reaches 2.85x EBITDA and deal NPV turns negative (−$7M).</p></div>
+        <div><h5>Partner-to-own</h5><p class="small">A 25-30% stake with DSD rights and an option. Revenue is not consolidated, so the FY29 targets stay unmet. Kept as our fallback if the seller refuses control.</p></div>
+        <div><h5>Distribution only</h5><p class="small">No control of the brand. KDP carried BodyArmor and lost it to Coca-Cola in 2018; BodyArmor later paid KDP's bottler $350M to settle.</p></div>
+        <div><h5>Marrow Lane or Vital alone</h5><p class="small">Marrow Lane lifts growth to 3.4%. Vital alone needs 24-36 months, and 4 in 10 new grocery items vanish within two years.</p></div>
+      </div>
+    </article>
+  </div>
+  <div class="sowhat"><span class="k">So what</span><p>Brightwater wins on growth, fit and capability. <b>The deal structure decides whether it also wins on value.</b></p></div>
+  <p class="src">Sources: Case pack; Team Green Dot model v2; KDP 10-K FY2021 (BodyArmor settlement); Bain, insurgent brand growth after acquisition; Marketing Letters (2021), study of 83,719 new grocery items; PepsiCo-PAI juice joint venture (2021).</p>
+</section>
+
+<!-- ================= ROOM 4: VALUE ================= -->
+<section class="room" id="value" data-room="4" data-name="Room 04 · What it is worth" data-short="Worth">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 04</span><span>Q3 · What value it creates</span></p>
+    <h2>Brightwater alone is worth about $220M. <em>The rest of its value comes from Alderbrook's own plants, trucks and data.</em></h2>
+  </div>
+  <div class="plates">
+    <article class="plate s7">
+      <div class="plate-h"><span class="tag">A</span><h3>Where FY29 EBITDA comes from ($M)</h3></div>
+      <svg id="bridge" class="chart" viewBox="0 0 660 300" role="img" aria-label="FY29 EBITDA bridge"></svg>
+      <p class="small" style="margin-top:6px"><b>+$45M in FY29, +$64M at FY30 run-rate.</b> Every synergy is already haircut: we count 40% of the DSD margin gain, and canning savings are net of changeovers and freight.</p>
+    </article>
+    <article class="plate s5">
+      <div class="plate-h"><span class="tag">B</span><h3>Does it earn its cost of capital?</h3></div>
+      <div class="ret" style="grid-template-columns:1fr 1fr">
+        <div><p class="big good num">+$68M</p><p>Deal NPV. IRR 15% against an 11% hurdle for Brightwater's own cash flows.</p></div>
+        <div><p class="big num">77%</p><p>Share of planned synergies we must capture to break even.</p></div>
+      </div>
+      <p class="small" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)"><b>Program NPV about +$148M:</b> the deal, the data and AI engine (+$59M) and the Vital value tier (+$22M). We keep them apart so the deal stands on its own.<br><b>Not counted:</b> a tax step-up worth about +$53M if Brightwater is an LLC.</p>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">C</span><h3>What Brightwater is worth, 100% of equity ($M)</h3><span class="aside">Our offer sits inside every range</span></div>
+      <svg id="field" class="chart" viewBox="0 0 1100 250" role="img" aria-label="Valuation ranges"></svg>
+    </article>
+  </div>
+  <div class="sowhat"><span class="k">So what</span><p>Paying $450M up front hands the seller <b>every dollar of synergy Alderbrook would create</b>. Staging the price keeps that value with Alderbrook and caps the downside.</p></div>
+  <p class="src">Sources: Team Green Dot model v2 (synergies discounted at 9%, Brightwater standalone at 11%; exit at 12x FY30 EBITDA against a soft-drink peer median of about 11.9x, DealAscent Q2 2026). Precedents: PepsiCo-Poppi (2025), Celsius-Alani Nu (2025), KDP-GHOST (2024), Olipop round (2025), Danone-Huel (2026).</p>
+</section>
+
+<!-- ================= ROOM 5: DEAL ================= -->
+<section class="room" id="deal" data-room="5" data-name="Room 05 · The deal" data-short="Deal">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 05</span><span>Q3 · How we pay for it</span></p>
+    <h2>$234M at close buys control. <em>The last 40% is priced on results, and capped.</em></h2>
+    <p class="lede">Run the deal yourself. Change the price, Brightwater's growth and how much synergy we capture, and watch the board's four tests.</p>
+  </div>
+  <div class="plates">
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">A</span><h3>The structure</h3></div>
+      <div class="tranches">
+        <div class="tr a"><p class="kicker">Tranche 1 · at close, April 2027</p><p class="t">60% for $222M</p>
+          <ul class="ticks small"><li>$370M valuation: 3.9x FY25 and 2.9x FY26 revenue, inside the precedent range</li><li>The PE investor sells its whole stake for cash</li><li>The founder keeps 40% and leads the brand</li></ul></div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="tr b"><p class="kicker">Tranche 2 · Q1 FY29, after the FY28 audit</p><p class="t">40% at 2.5x revenue, capped at $190M</p>
+          <ul class="ticks small"><li>Revenue from our own DSD outlets counts at half, so we do not pay twice for our own trucks</li><li>Price falls if gross margin drops below 44% or promoted volume tops 25%</li><li>The founder can sell to us at 1.25x only if we do not buy</li></ul></div>
+      </div>
+    </article>
+    <article class="plate s12" id="simulator">
+      <div class="plate-h"><span class="tag">B</span><h3>Run the deal</h3><span class="aside">Same model as our appendix</span></div>
+      <div class="sim">
+        <div class="ctrl">
+          <div><div class="lab"><span>Structure</span></div>
+            <div class="seg two" role="group" aria-label="Structure"><button data-k="staged" data-v="1" aria-pressed="true">Graft Plan, 60/40</button><button data-k="staged" data-v="0" aria-pressed="false">100% now, $450M cash</button></div></div>
+          <div id="v1wrap"><div class="lab"><label for="v1">Day-1 valuation (100% basis)</label><output id="v1o">$370M</output></div>
+            <input type="range" id="v1" min="330" max="440" step="10" value="370"></div>
+          <div><div class="lab"><span>Brightwater revenue in FY29</span></div>
+            <div class="seg" role="group" aria-label="Brightwater growth"><button data-k="scen" data-v="down" aria-pressed="false">$200M<br>downside</button><button data-k="scen" data-v="base" aria-pressed="true">$245M<br>our base</button><button data-k="scen" data-v="up" aria-pressed="false">$280M<br>upside</button></div>
+            <p class="small" style="margin-top:6px">Management says $260-300M. Our base case already cuts that.</p></div>
+          <div><div class="lab"><label for="real">Synergies captured</label><output id="realo">100%</output></div>
+            <input type="range" id="real" min="50" max="100" step="5" value="100"></div>
+        </div>
+        <div>
+          <div class="readout">
+            <div class="ro"><div class="v num" id="oNpv">+$68M</div><div class="l">Deal NPV</div></div>
+            <div class="ro"><div class="v num" id="oDay1">$234M</div><div class="l">Cash at close</div></div>
+            <div class="ro"><div class="v num" id="oTotal">$409M</div><div class="l">Total paid for 100%</div></div>
+          </div>
+          <svg id="lev" class="chart" viewBox="0 0 560 248" role="img" aria-label="Net debt to EBITDA path" style="margin-top:12px"></svg>
+          <div class="checks" id="checks"></div>
+        </div>
+      </div>
+    </article>
+    <article class="plate s4">
+      <div class="plate-h"><span class="tag">C</span><h3>Sources and uses ($M)</h3></div>
+      <table class="su">
+        <tr class="h"><td colspan="2">Uses at close</td></tr>
+        <tr><td>60% of Brightwater equity</td><td>222</td></tr><tr><td>Fees, incl. HSR filing</td><td>12</td></tr><tr class="t"><td>Total</td><td>234</td></tr>
+        <tr class="h"><td colspan="2">Sources</td></tr>
+        <tr><td>Cash on hand</td><td>110</td></tr><tr><td>New 5-year term loan</td><td>124</td></tr><tr class="t"><td>Total</td><td>234</td></tr>
+      </table>
+      <p class="small" style="margin-top:10px">Paid from FY27-29 cash flow: $30M integration and retention, $30M distributor and co-packer exits, $5M can-line checks. Dividend held flat for two years. $150M of cash stays.</p>
+    </article>
+    <article class="plate s8">
+      <div class="plate-h"><span class="tag">D</span><h3>What the board should know</h3></div>
+      <div class="facts" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 0">
+        <div><h5>Accounting</h5><p>We consolidate from Day 1. The founder's 40% is redeemable minority interest, kept outside permanent equity and remeasured each period. Leverage is 2.03x on the lender's definition and 2.36x if we count the founder's right to sell as debt.</p></div>
+        <div><h5>Margin</h5><p>Customer relationships amortise at about $6M a year. FY29 operating margin is 11.5% before that and about 11.3% after, still above 11%.</p></div>
+        <div><h5>Approvals</h5><p>$222M for control is above the $133.9M HSR threshold for 2026. We file at signing, wait 30 days and close around April 2027.</p></div>
+        <div><h5>Precedents</h5><p>KDP bought 60% of GHOST with the rest on a formula. Coca-Cola took a stake in BodyArmor first. Coca-Cola's uncapped fairlife earn-out grew from $270M to $6.2B, so ours is capped.</p></div>
+      </div>
+    </article>
+  </div>
+  <p class="src">Sources: Case pack; Team Green Dot model v2; FTC 2026 HSR thresholds (effective 17 Feb 2026); Deloitte DART Roadmaps, Business Combinations and Noncontrolling Interests; KDP release (24 Oct 2024); Coca-Cola 10-K FY2025 (fairlife); PepsiCo 10-Q (Sep 2026).</p>
+</section>
+
+<!-- ================= ROOM 6: EXECUTION ================= -->
+<section class="room" id="execution" data-room="6" data-name="Room 06 · Execution" data-short="Execution">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 06</span><span>Q4 · What it takes to execute</span></p>
+    <h2>Protect what shoppers love. <em>Move the plumbing.</em> Roll out in gated waves.</h2>
+    <p class="lede">Poppi's sales fell while it moved onto PepsiCo's trucks. Our rollout is built so that cannot happen all at once.</p>
+  </div>
+  <div class="plates">
+    <article class="plate s7">
+      <div class="plate-h"><span class="tag">A</span><h3>Who owns what after close</h3></div>
+      <div class="split">
+        <div class="front"><h4>Brightwater keeps · Boulder</h4><ul class="ticks small"><li>Brand, recipes, design and social voice</li><li>The 90-day flavour cycle and the 5 AI specialists</li><li>Natural and specialty stores (65% of sales) on current distributors</li><li>Its own P&amp;L and a protected marketing budget</li></ul></div>
+        <div class="back"><h4>Alderbrook runs · the rootstock</h4><ul class="ticks small"><li>Canning of core flavours on two can lines</li><li>Grocery and c-store delivery on DSD</li><li>Aluminium buying and hedging</li><li>Finance, legal, HR, systems and the data platform</li></ul></div>
+      </div>
+      <div class="graftline" aria-hidden="true"></div>
+      <p class="small"><b>Governance.</b> An integration office reports to the CEO with five workstreams. A technical agreement sets taste and spec tolerances; disputes go to the COO and founder within five days. <b>Unchanged on Day 1:</b> prices, recipes, natural-channel distributors, Brightwater's people and pay.</p>
+    </article>
+    <article class="plate s5">
+      <div class="plate-h"><span class="tag">B</span><h3>Manufacturing in two steps</h3></div>
+      <div class="steps2">
+        <div><p class="n">1</p><p><b>Months 0-6</b></p><p class="small">Qualify core flavours on our two can lines: taste panels, carbonation, shelf life.</p></div>
+        <div><p class="n">2</p><p><b>Month 6 on</b></p><p class="small">Move core flavours (about 65% of volume) in-house. Seasonal runs stay with one co-packer; exit the other two.</p></div>
+      </div>
+      <p class="small" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">Saving: the 18% co-packing premium, less about 3 points for changeovers and freight. About $10M in FY29.</p>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">C</span><h3>The DSD rollout: each wave must pass a gate</h3><span class="aside">Each dot = 1,000 of our 110,000 DSD outlets</span></div>
+      <div class="waves">
+        <svg id="wavemap" class="chart" viewBox="0 0 520 330" role="img" aria-label="Outlet waves"></svg>
+        <div>
+          <div class="wave-steps" id="waveSteps"></div>
+          <label class="switch"><input type="checkbox" id="miss"> Show what happens if a gate is missed</label>
+          <div class="gate" id="gateMsg"></div>
+        </div>
+      </div>
+    </article>
+    <article class="plate s5">
+      <div class="plate-h"><span class="tag">D</span><h3>Two brands, two price lanes</h3></div>
+      <div class="lanes">
+        <div class="lane"><img src="{{CAN_BW}}" alt="Brightwater can" width="78" height="140"><div><p class="kicker" style="color:var(--fruit)">Brightwater</p><p class="p">$1.95</p><p class="small">a can. Premium lane: natural stores plus chosen grocery.</p></div></div>
+        <div class="lane"><img src="{{CAN_VITAL}}" alt="Vital can" width="78" height="140"><div><p class="kicker">Vital</p><p class="p">$1.25</p><p class="small">a can in 12-packs. Value lane: grocery and c-store on DSD.</p></div></div>
+      </div>
+      <svg id="ladder" class="chart" viewBox="0 0 400 116" role="img" aria-label="Shelf price per can on Walmart.com, with Vital and Brightwater placed" style="margin-top:20px"></svg>
+      <p class="note">Price per can, Walmart.com, 28 Oct 2026. Vital takes the empty band between mass soda and the premium brands.</p>
+    </article>
+    <article class="plate s7">
+      <div class="plate-h"><span class="tag">E</span><h3>Failures we designed against</h3></div>
+      <div class="lessons">
+        <div><div><b>Quaker and Snapple, 1994</b><span>Bought for $1.7B, sold for $300M after breaking Snapple's distributor model.</span></div><em>Natural channel stays on its current distributors.</em></div>
+        <div><div><b>Coca-Cola, Honest Tea and Zico</b><span>Small brands lost the shelf fight inside a giant and were dropped.</span></div><em>Own P&amp;L and a protected budget.</em></div>
+        <div><div><b>PepsiCo and Poppi, 2026</b><span>Sales fell during the switch to company trucks.</span></div><em>Waves with gates, not one big switch.</em></div>
+        <div><div><b>Alderbrook's 2016 and 2019 deals</b><span>Both sell less today than when bought.</span></div><em>A post-mortem before close; integration metrics go to the board.</em></div>
+      </div>
+    </article>
+  </div>
+  <div class="sowhat"><span class="k">So what</span><p>We change <b>the plumbing, not the personality</b>. Brightwater keeps what shoppers love. Alderbrook brings the cost base, the trucks and a cheaper second lane.</p></div>
+  <p class="src">Sources: Case pack; HBS Working Knowledge (Snapple); Coca-Cola statements on Honest Tea and Zico (2020, 2022); Beverage Digest (Aug 2026); Bain, Six steps to speed insurgent brand growth post-acquisition; Deloitte, Post-transaction integration by design (2026); Walmart.com shelf check.</p>
+</section>
+
+<!-- ================= ROOM 7: DATA & AI ================= -->
+<section class="room" id="data" data-room="7" data-name="Room 07 · Data and AI" data-short="Data">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 07</span><span>Q5 · The role of AI and data</span></p>
+    <h2>Brightwater's trend engine plus Alderbrook's outlet data decide <em>where to sell, what to make and how to price</em>.</h2>
+    <p class="lede">Pick a use case to see which data feeds it, what it targets and what the evidence says.</p>
+  </div>
+  <div class="plates">
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">A</span><h3>The Orchard Engine</h3><span class="aside">Choose a use case</span></div>
+      <div class="engine" id="engine">
+        <svg class="wires" id="wires" aria-hidden="true"></svg>
+        <div class="inputs" id="inputs">
+          <div class="inp" data-i="dsd"><b>DSD deliveries</b><span>What we ship into 110,000 outlets each week</span></div>
+          <div class="inp" data-i="pos"><b>Retailer sales feeds</b><span>What shoppers actually buy</span></div>
+          <div class="inp" data-i="syn"><b>Syndicated data</b><span>Circana and SPINS category trends</span></div>
+          <div class="inp" data-i="soc"><b>Social, search, reviews</b><span>Brightwater's existing trend tools</span></div>
+        </div>
+        <div class="core"><div><p class="kicker">The Orchard Engine</p><p class="t">13 people, one data platform</p><p>5 Brightwater specialists plus 8 hires. A person signs off every price, promotion and health claim.</p></div></div>
+        <div class="outputs" id="outputs"></div>
+      </div>
+      <div class="ucdetail" id="ucd"></div>
+    </article>
+    <article class="plate s4"><div class="plate-h"><span class="tag">B</span><h3>Team and cost</h3></div>
+      <p class="small">Head of commercial analytics, 2 data engineers, 2 ML engineers, 2 revenue managers and a change lead, plus a champion in each of the 60 DCs. <b>$3M to build, $4.5M a year to run</b>, data and tools included. We buy trend and promotion tools, build the outlet models, and partner for the cloud platform.</p></article>
+    <article class="plate s4"><div class="plate-h"><span class="tag">C</span><h3>Safeguards</h3></div>
+      <p class="small">Deloitte's Trustworthy AI as the checklist: a named owner for each model, a monthly accuracy and drift review, no personal shopper data, and every health claim checked against the fibre dose. Poppi settled a gut-health claims case for $8.9M.</p></article>
+    <article class="plate s4"><div class="plate-h"><span class="tag">D</span><h3>Value and realism</h3></div>
+      <p class="small">Base case <b>+$4.5M FY29 EBITDA</b> after running costs, upside +$9.5M. Only 25% of firms have scaled 40% or more of their AI pilots (Deloitte, 2026), so we start with the two uses that have clear baselines.</p></article>
+  </div>
+  <div class="sowhat"><span class="k">So what</span><p>Drivers get suggested orders inside the handhelds they already use, with pay tied to accuracy. <b>The data that plans routes today picks the waves that de-risk the deal.</b></p></div>
+  <p class="src">Sources: Case pack; Nielsen trade promotion studies (2014-16); Deloitte, 2026 Retail Industry Global Outlook and State of AI in the Enterprise (2026); MIT NANDA, The GenAI Divide (2025); Poppi settlement (2025). Vendor uplift figures (Sigmoid, Syren) are vendor-reported and not used in our numbers.</p>
+</section>
+
+<!-- ================= ROOM 8: ROADMAP ================= -->
+<section class="room" id="roadmap" data-room="8" data-name="Room 08 · The road" data-short="Road">
+  <div class="threshold">
+    <p class="eyebrow"><span class="rn">Room 08</span><span>Q4 · Key questions and the plan</span></p>
+    <h2>Eight locks to open before signing. <em>Then one gated step at a time.</em></h2>
+  </div>
+  <div class="plates">
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">A</span><h3>Before we sign: eight questions diligence must answer</h3></div>
+      <div class="locks" id="locks"></div>
+    </article>
+    <article class="plate s12">
+      <div class="plate-h"><span class="tag">B</span><h3>The plan, from today's board to FY29</h3></div>
+      <div class="gantt-wrap"><div class="gantt" id="gantt"></div></div>
+    </article>
+    <article class="plate s7">
+      <div class="plate-h"><span class="tag">C</span><h3>Top risks</h3><span class="aside">L = likelihood · I = impact</span></div>
+      <table class="risks"><thead><tr><th>Risk</th><th>What we do</th><th>L</th><th>I</th></tr></thead><tbody id="risks"></tbody></table>
+    </article>
+    <article class="plate s5">
+      <div class="plate-h"><span class="tag">D</span><h3>Who decides</h3></div>
+      <div class="decide" style="grid-template-columns:1fr">
+        <div><h5>The board</h5><p class="small">The offer range today, final approval in March 2027, and whether to buy the last 40% in FY29.</p></div>
+        <div><h5>The CEO</h5><p class="small">Each DSD wave against its gate, and the integration budget within plan.</p></div>
+        <div><h5>The integration office</h5><p class="small">Weekly delivery and one quarterly scorecard to the board.</p></div>
+      </div>
+      <div class="walk" style="margin-top:14px"><h4>Walk away if</h4><ul class="ticks small"><li>The Day-1 valuation goes above $400M</li><li>Distributor and co-packer exits cost more than $40M</li><li>The founder or the AI team will not sign</li><li>The health claims cannot be supported</li></ul></div>
+    </article>
+  </div>
+  <p class="src">Sources: Case pack (board meets in six weeks); FTC 2026 HSR thresholds; KDP 10-K FY2021; Celsius 10-K FY2022; Poppi settlement (2025); Deloitte Center for Board Effectiveness on M&amp;A oversight; Team Green Dot plan.</p>
+</section>
+
+<!-- ================= FINALE ================= -->
+<section class="finale" id="ask" data-room="9" data-name="The ask" data-short="Ask">
+  <div class="ringed">
+    <p class="eyebrow" style="justify-content:center"><span class="rn">The ring</span><span>The board ask</span></p>
+    <h2>Approve<br>the offer<span class="dot"></span></h2>
+    <p class="lede">Two decisions, each taken against written walk-away terms.</p>
+  </div>
+  <div class="two">
+    <div class="plate"><p class="when">Today</p><p class="what">A non-binding offer for 60% of Brightwater at a $340-400M valuation.</p><p class="small">Plus a $3M diligence budget to answer the eight questions.</p></div>
+    <div class="plate"><p class="when">March 2027</p><p class="what">Final approval, only if all four gates hold.</p><p class="small">Retention signed. Exit costs under $40M. HSR cleared and health claims supported. Valuation at or below $400M.</p></div>
+  </div>
+  <div class="gets"><span><b>5.6%</b> growth a year</span><span><b>12.3%</b> better-for-you share</span><span><b>11.5%</b> operating margin</span><span><b>2.03x</b> peak leverage</span></div>
+  <p class="sign"><b>Team Green Dot</b> · Chaitanya Sharma · Saloni Prashant Nazare · XLRI - Xavier School of Management</p>
+  <a class="btn" href="#archive" style="margin-top:22px">Open the archive ↓</a>
+</section>
+
+<!-- ================= ARCHIVE ================= -->
+<section class="archive" id="archive" data-room="10" data-name="The archive" data-short="Archive">
+  <p class="eyebrow"><span class="rn">The archive</span><span>Assumptions, numbers, sources and how we worked</span></p>
+  <details><summary>Key assumptions</summary><div class="dbody tbl-wrap"><table class="tbl"><thead><tr><th>Item</th><th style="text-align:left">Assumption (base case)</th></tr></thead><tbody id="assump"></tbody></table></div></details>
+  <details><summary>Plan financials by year ($M)</summary><div class="dbody tbl-wrap"><table class="tbl" id="fin"></table><p class="small" style="margin-top:8px">Brightwater EBITDA is consolidated and includes synergies. FY27 is a nine-month stub after an April close. FY25 Brightwater is shown for reference only.</p></div></details>
+  <details><summary>Deal NPV sensitivity ($M)</summary><div class="dbody tbl-wrap"><table class="tbl" id="sens"></table><p class="small" style="margin-top:8px">Computed live from the same model. Break-even synergy capture in the base case is 77%. With discount rates of 10% and 12.5% the base case NPV is +$52M.</p></div></details>
+  <details><summary>Deal precedents</summary><div class="dbody tbl-wrap"><table class="tbl"><thead><tr><th>Deal</th><th>Year</th><th>Price</th><th>Multiple</th></tr></thead><tbody>
+    <tr><td>PepsiCo / Poppi</td><td>2025</td><td>$1.95B</td><td>~4x sales</td></tr><tr><td>Celsius / Alani Nu</td><td>2025</td><td>$1.8B</td><td>&lt;3x revenue</td></tr>
+    <tr><td>KDP / GHOST, 60%</td><td>2024</td><td>$990M</td><td>~3x revenue</td></tr><tr><td>Coca-Cola / BodyArmor, 85%</td><td>2021</td><td>$5.6B</td><td>~4.7x retail sales</td></tr>
+    <tr><td>Danone / Huel</td><td>2026</td><td>~EUR 1B</td><td>~4x revenue</td></tr><tr><td>Olipop funding round</td><td>2025</td><td>$1.85B</td><td>~4.6x revenue</td></tr>
+    <tr><td>Campbell / Sovos</td><td>2023</td><td>$2.7B</td><td>14.6x synergised EBITDA</td></tr><tr><td><b>Brightwater at $370M</b></td><td></td><td></td><td><b>3.9x trailing, 2.9x forward</b></td></tr></tbody></table></div></details>
+  <details><summary>When Marrow Lane would make sense</summary><div class="dbody"><p class="small">Buying both now takes net debt to 3.56x EBITDA, past the 3.5x covenant. We would look again after FY28 if leverage is under 1.8x, a general manager is hired before close, and the price is under 15x EBITDA: about $95-135M rather than $170M. It would then add delivery density in convenience and foodservice.</p></div></details>
+  <details><summary>Sources</summary><div class="dbody"><p class="small">Deloitte Capstone case pack and FAQ (2026). Circana via Beverage Industry (2025). Beverage Digest (5 Aug 2026). Bloomberg (12 Oct 2026) and PepsiCo 10-Q (Sep 2026). KDP release (24 Oct 2024) and 10-K FY2021. Celsius release (Feb 2025) and 10-K FY2022. Coca-Cola 10-K FY2025. Campbell-Sovos filing (2023). Bain, Six steps to speed insurgent brand growth post-acquisition. Nielsen trade promotion studies. KFF Health Tracking Poll (Nov 2025). Zappi (2025). USDA SNAP waivers (2026). FTC HSR thresholds (2026). DealAscent beverages M&amp;A (Q2 2026). Deloitte: 2026 Global Consumer Products Outlook, 2026 M&amp;A Trends Survey, State of AI in the Enterprise 2026, 2026 Retail Industry Global Outlook, DART Roadmaps. MIT NANDA, The GenAI Divide (2025). Team Green Dot shelf check, Walmart.com (28 Oct 2026). All Alderbrook, Brightwater and Marrow Lane figures come from the case.</p></div></details>
+  <details><summary>How we used AI</summary><div class="dbody"><p class="small">We used NotebookLM and Claude to gather and summarise public sources, to argue against our own plan through a five-person mock judging panel, and to help build this site. A person traced every outside figure here to a filing, a company release or the original report, and we rebuilt every case number in our own model, which also drives the deal simulator in Room 05. The tools made mistakes, most importantly counting cash twice when measuring leverage; we found and fixed them. The recommendation and every judgement in it are our own.</p></div></details>
+</section>
+<footer class="end"><span>Project Orchard · Deloitte Capstone 2026</span><span>Team Green Dot · XLRI</span><span>All company figures for Alderbrook, Brightwater and Marrow Lane are fictional and come from the case.</span></footer>
+</main>
+
+<script>{{MODEL_JS}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>{{APP_JS}}</script>
